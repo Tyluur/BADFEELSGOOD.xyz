@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,9 +104,10 @@
       50%       { opacity: 1;   transform: scale(1.08); }
     }
 
-    .mask-wrap svg {
+    .mask-wrap img {
       width: 100%;
       height: 100%;
+      object-fit: contain;
       filter: drop-shadow(0 0 24px rgba(200,192,176,0.12));
     }
 
@@ -234,26 +236,8 @@
 <body>
   <main class="site">
 
-    <!-- Mask Logo SVG — replace src with your actual mask PNG if preferred -->
     <div class="mask-wrap">
-      <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Abstract mask shape — swap this entire SVG for an <img> tag pointing to your mask PNG -->
-        <ellipse cx="100" cy="95" rx="72" ry="82" fill="none" stroke="#f0ece4" stroke-width="1.5"/>
-        <!-- Eyes -->
-        <ellipse cx="72" cy="80" rx="14" ry="18" fill="#000" stroke="#f0ece4" stroke-width="1.2"/>
-        <ellipse cx="128" cy="80" rx="14" ry="18" fill="#000" stroke="#f0ece4" stroke-width="1.2"/>
-        <!-- Pupils -->
-        <ellipse cx="72" cy="82" rx="5" ry="7" fill="#f0ece4" opacity="0.15"/>
-        <ellipse cx="128" cy="82" rx="5" ry="7" fill="#f0ece4" opacity="0.15"/>
-        <!-- Nose bridge -->
-        <path d="M93 98 Q100 110 107 98" stroke="#f0ece4" stroke-width="1" fill="none" opacity="0.5"/>
-        <!-- Mouth -->
-        <path d="M78 128 Q100 140 122 128" stroke="#f0ece4" stroke-width="1.2" fill="none" opacity="0.6"/>
-        <!-- Crack detail -->
-        <path d="M100 14 L97 45 L103 60 L99 78" stroke="#f0ece4" stroke-width="0.6" opacity="0.2"/>
-        <!-- Outer glow ring -->
-        <ellipse cx="100" cy="95" rx="78" ry="88" fill="none" stroke="#f0ece4" stroke-width="0.3" opacity="0.15"/>
-      </svg>
+      <img src="avatar.png" alt="BADFEELSGOOD" />
     </div>
 
     <h1 class="name">BADFEELSGOOD</h1>
