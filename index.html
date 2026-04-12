@@ -37,12 +37,46 @@
     /* ── BACKGROUND ── */
     .bg {
       position: fixed; inset: 0; z-index: 0;
-      background: radial-gradient(ellipse 90% 70% at 30% 50%, #0d0d0d 0%, #000 60%);
-      animation: bgpulse 10s ease-in-out infinite alternate;
+      background: #000;
+      overflow: hidden;
     }
-    @keyframes bgpulse {
-      0%   { background: radial-gradient(ellipse 90% 70% at 30% 50%, #111 0%, #000 65%); }
-      100% { background: radial-gradient(ellipse 70% 90% at 70% 60%, #0a0a0a 0%, #000 65%); }
+
+    .bg::before,
+    .bg::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      will-change: transform;
+    }
+
+    .bg::before {
+      width: 70vw; height: 70vw;
+      background: radial-gradient(ellipse at center, #2a2a2a 0%, transparent 70%);
+      top: -10%; left: -10%;
+      animation: orb1 18s ease-in-out infinite alternate;
+    }
+
+    .bg::after {
+      width: 60vw; height: 60vw;
+      background: radial-gradient(ellipse at center, #1a1a1a 0%, transparent 70%);
+      bottom: -10%; right: -10%;
+      animation: orb2 22s ease-in-out infinite alternate;
+    }
+
+    @keyframes orb1 {
+      0%   { transform: translate(0, 0) scale(1); }
+      33%  { transform: translate(30vw, 20vh) scale(1.15); }
+      66%  { transform: translate(15vw, 50vh) scale(0.9); }
+      100% { transform: translate(50vw, 30vh) scale(1.1); }
+    }
+
+    @keyframes orb2 {
+      0%   { transform: translate(0, 0) scale(1); }
+      33%  { transform: translate(-25vw, -20vh) scale(1.2); }
+      66%  { transform: translate(-40vw, -10vh) scale(0.95); }
+      100% { transform: translate(-20vw, -40vh) scale(1.05); }
     }
 
     .grain {
