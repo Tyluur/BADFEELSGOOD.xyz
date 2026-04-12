@@ -12,10 +12,13 @@
     :root {
       --black: #000;
       --white: #f0ece4;
-      --dim: #555;
+      --dim: #666;
       --mid: #888;
       --accent: #b8b0a0;
       --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.16);
+      --hover-bg: rgba(255,255,255,0.04);
+      --active-bg: rgba(255,255,255,0.06);
       --top-bar-h: 36px;
       --nav-bar-h: 72px;
     }
@@ -50,170 +53,260 @@
       animation: grain 0.35s steps(1) infinite;
     }
     @keyframes grain {
-      0%   { background-position: 0 0; }    25%  { background-position: -64px 32px; }
-      50%  { background-position: 32px -64px; } 75%  { background-position: -32px 64px; }
+      0%   { background-position: 0 0; }
+      25%  { background-position: -64px 32px; }
+      50%  { background-position: 32px -64px; }
+      75%  { background-position: -32px 64px; }
       100% { background-position: 64px -32px; }
     }
 
     /* ══════════════════════════════════════
-       TOP BAR  (utility strip — like StrongHold's top-bar)
+       TOP BAR
     ══════════════════════════════════════ */
     .top-bar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       height: var(--top-bar-h);
-      background: rgba(0,0,0,0.9);
+      background: rgba(0,0,0,0.95);
       border-bottom: 1px solid var(--border);
-      display: flex; align-items: center;
     }
 
     .top-bar__sections {
-      width: 100%; display: flex;
-      align-items: center; justify-content: space-between;
-      padding: 0 24px;
+      width: 100%; height: 100%;
+      display: flex;
+      align-items: stretch;
+      justify-content: space-between;
     }
 
-    .top-bar__section { display: flex; align-items: center; gap: 0; list-style: none; }
+    .top-bar__section {
+      display: flex;
+      align-items: stretch;
+      list-style: none;
+    }
 
-    .top-bar__item { display: flex; align-items: center; }
+    .top-bar__item {
+      display: flex;
+      align-items: stretch;
+    }
 
     .top-bar__link {
-      display: flex; align-items: center; gap: 6px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
       text-decoration: none;
-      padding: 0 14px;
-      height: var(--top-bar-h);
+      padding: 0 16px;
       font-size: 9px;
       letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--dim);
       border-right: 1px solid var(--border);
-      transition: color 0.2s, background 0.2s;
+      transition: color 0.15s ease, background-color 0.15s ease;
+      white-space: nowrap;
+      position: relative;
     }
+
+    /* First item in left section gets left border */
     .top-bar__section--left .top-bar__item:first-child .top-bar__link {
       border-left: 1px solid var(--border);
     }
+
+    /* Right section: borders on left */
     .top-bar__section--right .top-bar__link {
       border-right: none;
       border-left: 1px solid var(--border);
     }
-    .top-bar__link:hover { color: var(--white); background: rgba(255,255,255,0.03); }
 
-    .top-bar__label { pointer-events: none; }
+    .top-bar__link:hover {
+      color: var(--white);
+      background-color: var(--hover-bg);
+    }
 
-    /* dot indicator */
+    /* Active underline on hover — matches StrongHold */
+    .top-bar__link::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.2s ease;
+    }
+    .top-bar__link:hover::after {
+      transform: scaleX(1);
+    }
+
     .top-bar__dot {
-      width: 5px; height: 5px; border-radius: 50%;
-      background: #1db954; /* spotify green */
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #1db954;
       display: inline-block;
-      box-shadow: 0 0 6px rgba(29,185,84,0.6);
+      box-shadow: 0 0 6px rgba(29,185,84,0.7);
+      flex-shrink: 0;
     }
 
     /* ══════════════════════════════════════
-       NAV BAR  (main nav — like StrongHold's nav-bar)
+       NAV BAR — StrongHold-style
     ══════════════════════════════════════ */
     .nav-bar {
       position: fixed;
-      top: var(--top-bar-h); left: 0; right: 0; z-index: 20;
+      top: var(--top-bar-h);
+      left: 0; right: 0;
+      z-index: 100;
       height: var(--nav-bar-h);
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.9);
       border-bottom: 1px solid var(--border);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .nav {
       height: 100%;
-      display: flex; align-items: stretch; justify-content: center;
+      display: flex;
+      align-items: stretch;
       position: relative;
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
     }
 
-    /* Center logo — exactly like StrongHold's nav__logo */
+    /* ── Nav destination (left/right items) ── */
+    .nav__destination {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 28px;
+      text-decoration: none;
+      color: var(--dim);
+      font-size: 8px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      border-right: 1px solid var(--border);
+      transition: color 0.15s ease, background-color 0.15s ease;
+      min-width: 90px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .nav__destination:first-child {
+      border-left: 1px solid var(--border);
+    }
+
+    /* Icon inside nav destination */
+    .nav__icon {
+      width: 20px; height: 20px;
+      fill: currentColor;
+      transition: fill 0.15s ease, transform 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .nav__label {
+      pointer-events: none;
+    }
+
+    /* Hover state — matches StrongHold exactly */
+    .nav__destination:hover {
+      color: var(--white);
+      background-color: var(--hover-bg);
+    }
+
+    .nav__destination:hover .nav__icon {
+      transform: translateY(-1px);
+    }
+
+    /* Active state */
+    .nav__destination--active {
+      color: var(--accent);
+      background-color: var(--active-bg);
+    }
+
+    /* Bottom indicator bar — StrongHold's active underline */
+    .nav__destination::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav__destination:hover::after,
+    .nav__destination--active::after {
+      transform: scaleX(1);
+    }
+
+    .nav__destination--active::after {
+      background: var(--accent);
+      opacity: 0.6;
+    }
+
+    /* Divider between nav items */
+    .nav__divider {
+      width: 1px;
+      background: var(--border);
+      align-self: stretch;
+      flex-shrink: 0;
+    }
+
+    /* Left/right groups */
+    .nav__left {
+      display: flex;
+      align-items: stretch;
+      margin-right: auto;
+    }
+
+    .nav__right {
+      display: flex;
+      align-items: stretch;
+      margin-left: auto;
+    }
+
+    /* ── Center Logo — absolutely positioned like StrongHold ── */
     .nav__logo {
       position: absolute;
       left: 50%; top: 50%;
       transform: translate(-50%, -50%);
-      width: 48px; height: 48px;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px; height: 52px;
       text-decoration: none;
       pointer-events: auto;
+      z-index: 1;
     }
 
     .nav__logo img {
       width: 100%; height: 100%;
       object-fit: contain;
-      filter: drop-shadow(0 0 10px rgba(255,255,255,0.15));
-      transition: filter 0.3s;
-    }
-    .nav__logo:hover img { filter: drop-shadow(0 0 18px rgba(255,255,255,0.35)); }
-
-    /* Nav destination items */
-    .nav__destination {
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 5px;
-      padding: 0 24px;
-      text-decoration: none;
-      color: var(--dim);
-      font-size: 8px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      border-right: 1px solid var(--border);
-      transition: color 0.2s, background 0.2s;
-      min-width: 80px;
-      position: relative;
-    }
-    .nav__destination:first-child { border-left: 1px solid var(--border); }
-    .nav__destination:hover { color: var(--white); background: rgba(255,255,255,0.02); }
-
-    .nav__destination--active { color: var(--accent); }
-    .nav__destination--active::after {
-      content: '';
-      position: absolute; bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--accent);
-      opacity: 0.5;
+      filter: drop-shadow(0 0 8px rgba(255,255,255,0.1));
+      transition: filter 0.25s ease, transform 0.25s ease;
     }
 
-    .nav__icon {
-      width: 22px; height: 22px;
-      fill: currentColor;
-      transition: fill 0.2s;
-    }
-
-    .nav__label { pointer-events: none; }
-
-    .nav__divider {
-      width: 1px;
-      background: var(--border);
-      align-self: stretch;
-    }
-
-    /* Left/right groups pushed away from center */
-    .nav__left {
-      display: flex; align-items: stretch;
-      margin-right: auto;
-    }
-    .nav__right {
-      display: flex; align-items: stretch;
-      margin-left: auto;
+    .nav__logo:hover img {
+      filter: drop-shadow(0 0 20px rgba(255,255,255,0.3));
+      transform: scale(1.05);
     }
 
     /* ══════════════════════════════════════
-       HERO / PAGE CONTENT
+       PAGE CONTENT
     ══════════════════════════════════════ */
     .page {
       position: relative; z-index: 5;
       min-height: 100vh;
       padding-top: calc(var(--top-bar-h) + var(--nav-bar-h));
-      display: flex; flex-direction: column;
+      display: flex;
+      flex-direction: column;
     }
 
     .hero {
       flex: 1;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      padding: 60px 24px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px 80px;
       text-align: center;
     }
 
@@ -250,29 +343,57 @@
     }
 
     .platform-link {
-      display: flex; align-items: center; justify-content: space-between;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: 15px 18px;
       background: rgba(255,255,255,0.025);
       border: 1px solid var(--border);
       text-decoration: none;
       color: var(--accent);
-      font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase;
-      transition: all 0.22s ease;
-      position: relative; overflow: hidden;
+      font-size: 9px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
     }
-    .platform-link::before {
-      content: ''; position: absolute; inset: 0;
-      background: rgba(255,255,255,0.035); opacity: 0; transition: opacity 0.22s;
-    }
-    .platform-link:hover::before { opacity: 1; }
-    .platform-link:hover { border-color: rgba(255,255,255,0.16); color: var(--white); }
-    .platform-link.wide { grid-column: 1 / -1; }
 
-    .arrow { opacity: 0.3; transition: all 0.22s; font-size: 12px; }
-    .platform-link:hover .arrow { opacity: 1; transform: translateX(3px); }
+    .platform-link::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.03);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .platform-link:hover {
+      border-color: var(--border-hover);
+      color: var(--white);
+    }
+
+    .platform-link:hover::before {
+      opacity: 1;
+    }
+
+    .platform-link.wide {
+      grid-column: 1 / -1;
+    }
+
+    .arrow {
+      opacity: 0.3;
+      transition: all 0.2s;
+      font-size: 12px;
+    }
+
+    .platform-link:hover .arrow {
+      opacity: 1;
+      transform: translateX(3px);
+    }
 
     /* ══════════════════════════════════════
-       FOOTER  (like StrongHold's page-footer)
+       FOOTER
     ══════════════════════════════════════ */
     .page-footer {
       position: relative; z-index: 5;
@@ -280,7 +401,8 @@
     }
 
     .page-footer-wrapper {
-      max-width: 960px; margin: 0 auto;
+      max-width: 960px;
+      margin: 0 auto;
       padding: 48px 32px 40px;
     }
 
@@ -292,79 +414,126 @@
     }
 
     .page-footer-info {
-      display: flex; gap: 20px; align-items: flex-start;
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
     }
 
     .page-footer-info__logo {
-      width: 40px; height: 40px; flex-shrink: 0;
+      width: 40px; height: 40px;
+      flex-shrink: 0;
       object-fit: contain;
-      opacity: 0.5;
+      opacity: 0.4;
       filter: grayscale(100%);
     }
 
     .page-footer-info__title {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 20px; letter-spacing: 0.12em;
-      color: var(--white); margin-bottom: 8px;
+      font-size: 20px;
+      letter-spacing: 0.12em;
+      color: var(--white);
+      margin-bottom: 8px;
     }
 
     .page-footer-info__line {
-      font-size: 9px; letter-spacing: 0.15em;
-      color: var(--dim); line-height: 1.8;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--dim);
+      line-height: 1.8;
     }
 
     .page-footer-social {
-      display: flex; flex-direction: column; gap: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .page-footer-section__title {
-      font-size: 9px; letter-spacing: 0.3em;
-      text-transform: uppercase; color: var(--mid);
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--mid);
       margin-bottom: 14px;
     }
 
-    .page-footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .page-footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
 
     .page-footer-links__item a {
-      font-size: 9px; letter-spacing: 0.15em;
-      color: var(--dim); text-decoration: none;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      color: var(--dim);
+      text-decoration: none;
       text-transform: uppercase;
-      transition: color 0.2s;
+      transition: color 0.15s;
     }
-    .page-footer-links__item a:hover { color: var(--white); }
+
+    .page-footer-links__item a:hover {
+      color: var(--white);
+    }
 
     .social-btn {
-      display: flex; align-items: center; gap: 8px;
-      text-decoration: none; color: var(--dim);
-      font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--dim);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
       padding: 8px 12px;
       border: 1px solid var(--border);
-      transition: all 0.2s;
+      transition: all 0.15s ease;
     }
-    .social-btn svg { width: 14px; height: 14px; fill: currentColor; }
-    .social-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
 
-    /* copyright strip */
+    .social-btn svg {
+      width: 14px; height: 14px;
+      fill: currentColor;
+    }
+
+    .social-btn:hover {
+      color: var(--white);
+      border-color: var(--border-hover);
+      background: var(--hover-bg);
+    }
+
     .footer-strip {
       border-top: 1px solid var(--border);
       padding: 14px 32px;
-      display: flex; align-items: center; justify-content: space-between;
-      max-width: 960px; margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 960px;
+      margin: 0 auto;
     }
-    .footer-strip span, .footer-strip a {
-      font-size: 8px; letter-spacing: 0.2em;
-      color: #333; text-transform: uppercase; text-decoration: none;
+
+    .footer-strip span,
+    .footer-strip a {
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      color: #333;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: color 0.15s;
     }
-    .footer-strip a:hover { color: var(--dim); }
+
+    .footer-strip a:hover {
+      color: var(--dim);
+    }
 
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(14px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    /* ── Mobile ── */
     @media (max-width: 640px) {
-      .nav__destination { min-width: 60px; padding: 0 14px; }
-      .nav__destination span { display: none; }
+      .nav__destination { min-width: 60px; padding: 0 16px; }
+      .nav__label { display: none; }
       .top-bar__link { padding: 0 10px; font-size: 8px; }
       .page-footer-content { grid-template-columns: 1fr; gap: 32px; }
       .platforms { grid-template-columns: 1fr; }
@@ -377,10 +546,10 @@
   <div class="bg"></div>
   <div class="grain"></div>
 
-  <!-- ══ TOP BAR (utility strip) ══ -->
+  <!-- ══ TOP BAR ══ -->
   <nav class="top-bar" aria-label="Top Bar">
     <div class="top-bar__sections">
-      <!-- Left: status / domain -->
+
       <ul class="top-bar__section top-bar__section--left">
         <li class="top-bar__item">
           <a class="top-bar__link" href="/">
@@ -389,13 +558,12 @@
           </a>
         </li>
         <li class="top-bar__item">
-          <a class="top-bar__link" href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog" target="_blank">
+          <a class="top-bar__link" href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog" target="_blank" rel="noopener">
             <span class="top-bar__label">Now streaming</span>
           </a>
         </li>
       </ul>
 
-      <!-- Right: contact / twitter -->
       <ul class="top-bar__section top-bar__section--right">
         <li class="top-bar__item">
           <a class="top-bar__link" href="mailto:badfeelsgood416@gmail.com">
@@ -403,64 +571,84 @@
           </a>
         </li>
         <li class="top-bar__item">
-          <a class="top-bar__link" href="https://x.com/BADFEELSGOOD" target="_blank">
+          <a class="top-bar__link" href="https://x.com/BADFEELSGOOD" target="_blank" rel="noopener">
             <span class="top-bar__label">X / Twitter</span>
           </a>
         </li>
       </ul>
+
     </div>
   </nav>
 
-  <!-- ══ NAV BAR (main nav with centered logo) ══ -->
+  <!-- ══ NAV BAR ══ -->
   <nav class="nav-bar" aria-label="Navigation Bar">
     <div class="nav">
 
-      <!-- LEFT destinations -->
+      <!-- LEFT -->
       <div class="nav__left">
-        <a class="nav__destination nav__destination--active" href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog" target="_blank">
-          <!-- Spotify icon -->
-          <svg class="nav__icon" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.622.622 0 01-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623.623 0 01-.277-1.215c3.809-.87 7.077-.496 9.712 1.115.294.181.387.563.207.857zm1.223-2.722a.78.78 0 01-1.072.257c-2.687-1.652-6.785-2.131-9.965-1.166a.78.78 0 01-.973-.519.78.78 0 01.52-.972c3.632-1.102 8.147-.568 11.233 1.328a.78.78 0 01.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71a.937.937 0 11-.543-1.794c3.532-1.072 9.404-.865 13.115 1.338a.937.937 0 01-.955 1.613z"/></svg>
+
+        <a class="nav__destination nav__destination--active"
+           href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog"
+           target="_blank" rel="noopener"
+           title="Spotify">
+          <svg class="nav__icon" viewBox="0 0 24 24">
+            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.622.622 0 01-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623.623 0 01-.277-1.215c3.809-.87 7.077-.496 9.712 1.115.294.181.387.563.207.857zm1.223-2.722a.78.78 0 01-1.072.257c-2.687-1.652-6.785-2.131-9.965-1.166a.78.78 0 01-.973-.519.78.78 0 01.52-.972c3.632-1.102 8.147-.568 11.233 1.328a.78.78 0 01.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71a.937.937 0 11-.543-1.794c3.532-1.072 9.404-.865 13.115 1.338a.937.937 0 01-.955 1.613z"/>
+          </svg>
           <span class="nav__label">Spotify</span>
         </a>
 
         <span class="nav__divider"></span>
 
-        <a class="nav__destination" href="https://soundcloud.com/BADFEELSGOOD" target="_blank">
-          <!-- SoundCloud icon -->
-          <svg class="nav__icon" viewBox="0 0 24 24"><path d="M1.175 12.225c-.017 0-.033.002-.049.003v-.003c0-.464.119-.897.325-1.276.559-1.034 1.671-1.734 2.95-1.734.261 0 .513.03.755.088.26-2.495 2.361-4.43 4.92-4.43 1.305 0 2.49.5 3.375 1.312.262.24.485.508.664.804.247-.073.508-.113.779-.113 1.458 0 2.64 1.179 2.64 2.634 0 .147-.013.293-.038.434.123-.018.248-.027.375-.027 1.564 0 2.833 1.266 2.833 2.827S22.439 15 20.875 15H1.175C.527 15 0 14.478 0 13.831c0-.645.527-1.168 1.175-1.168-.000.000-.000.000-.000.000z"/></svg>
+        <a class="nav__destination"
+           href="https://soundcloud.com/BADFEELSGOOD"
+           target="_blank" rel="noopener"
+           title="SoundCloud">
+          <svg class="nav__icon" viewBox="0 0 24 24">
+            <path d="M1.175 12.225c-.017 0-.033.002-.049.003v-.003c0-.464.119-.897.325-1.276.559-1.034 1.671-1.734 2.95-1.734.261 0 .513.03.755.088.26-2.495 2.361-4.43 4.92-4.43 1.305 0 2.49.5 3.375 1.312.262.24.485.508.664.804.247-.073.508-.113.779-.113 1.458 0 2.64 1.179 2.64 2.634 0 .147-.013.293-.038.434.123-.018.248-.027.375-.027 1.564 0 2.833 1.266 2.833 2.827S22.439 15 20.875 15H1.175C.527 15 0 14.478 0 13.831c0-.645.527-1.168 1.175-1.168z"/>
+          </svg>
           <span class="nav__label">SoundCloud</span>
         </a>
+
       </div>
 
-      <!-- CENTER logo (absolutely positioned like StrongHold) -->
-      <a class="nav__logo" href="/">
+      <!-- CENTER LOGO — absolutely positioned -->
+      <a class="nav__logo" href="/" title="BADFEELSGOOD">
         <img src="avatar.png" alt="BADFEELSGOOD">
       </a>
 
-      <!-- RIGHT destinations -->
+      <!-- RIGHT -->
       <div class="nav__right">
-        <a class="nav__destination" href="https://www.tiktok.com/@_badfeelsgood" target="_blank">
-          <!-- TikTok icon -->
-          <svg class="nav__icon" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg>
+
+        <a class="nav__destination"
+           href="https://www.tiktok.com/@_badfeelsgood"
+           target="_blank" rel="noopener"
+           title="TikTok">
+          <svg class="nav__icon" viewBox="0 0 24 24">
+            <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/>
+          </svg>
           <span class="nav__label">TikTok</span>
         </a>
 
         <span class="nav__divider"></span>
 
-        <a class="nav__destination" href="https://www.instagram.com/badfeelsgood" target="_blank">
-          <!-- Instagram icon -->
-          <svg class="nav__icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+        <a class="nav__destination"
+           href="https://www.instagram.com/badfeelsgood"
+           target="_blank" rel="noopener"
+           title="Instagram">
+          <svg class="nav__icon" viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
           <span class="nav__label">Instagram</span>
         </a>
+
       </div>
 
     </div>
   </nav>
 
-  <!-- ══ PAGE CONTENT ══ -->
+  <!-- ══ PAGE ══ -->
   <div class="page">
 
-    <!-- Hero -->
     <main class="hero">
       <h1 class="hero__title">BADFEELSGOOD</h1>
       <p class="hero__sub">dark music &nbsp;·&nbsp; toronto</p>
@@ -484,12 +672,10 @@
       </div>
     </main>
 
-    <!-- Footer -->
     <footer class="page-footer">
       <div class="page-footer-wrapper">
         <div class="page-footer-content">
 
-          <!-- Info block -->
           <div class="page-footer-info">
             <img class="page-footer-info__logo" src="avatar.png" alt="BADFEELSGOOD">
             <div class="page-footer-info__text">
@@ -499,9 +685,8 @@
             </div>
           </div>
 
-          <!-- Social buttons -->
           <div class="page-footer-social">
-            <a class="social-btn" href="https://x.com/BADFEELSGOOD" target="_blank">
+            <a class="social-btn" href="https://x.com/BADFEELSGOOD" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
               X / Twitter
             </a>
@@ -511,7 +696,6 @@
             </a>
           </div>
 
-          <!-- Links section -->
           <div class="page-footer-section">
             <div class="page-footer-section__title">Music</div>
             <ul class="page-footer-links">
@@ -525,7 +709,6 @@
 
         </div>
 
-        <!-- Copyright strip -->
         <div class="footer-strip">
           <span>© BADFEELSGOOD 2026 — toronto, ontario</span>
           <a href="mailto:badfeelsgood416@gmail.com">badfeelsgood416@gmail.com</a>
@@ -534,7 +717,7 @@
       </div>
     </footer>
 
-  </div><!-- /page -->
+  </div>
 
 </body>
 </html>
