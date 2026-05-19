@@ -54,13 +54,13 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
     :root {
       --black: #000; --white: #f0ece4; --dim: #666; --mid: #888; --accent: #b8b0a0;
       --border: rgba(255,255,255,0.08); --border-hover: rgba(255,255,255,0.16);
-      --hover-bg: rgba(255,255,255,0.04); --active-bg: rgba(255,255,255,0.06);
+      --hover-bg: rgba(255,255,255,0.04); --active-bg: rgba(255,255,0.06);
       --top-bar-h: 36px; --nav-bar-h: 72px; --chrome-h: calc(var(--top-bar-h) + var(--nav-bar-h));
     }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -70,7 +70,7 @@
    .bg { position: fixed; inset: 0; z-index: 0; background: #000; overflow: hidden; }
    .bg::before,.bg::after { content: ''; position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.18; will-change: transform; }
    .bg::before { width: 70vw; height: 70vw; background: radial-gradient(ellipse at center, #2a2a2a 0%, transparent 70%); top: -10%; left: -10%; animation: orb1 18s ease-in-out infinite alternate; }
-   .bg::after { width: 60vw; height: 60vw; background: radial-gradient(ellipse at center, #1a1a1a 0%, transparent 70%); bottom: -10%; right: -10%; animation: orb2 22s ease-in-out infinite alternate; }
+   .bg::after { width: 60vw; height: 60vw; background: radial-gradient(ellipse at center, #1a 0%, transparent 70%); bottom: -10%; right: -10%; animation: orb2 22s ease-in-out infinite alternate; }
     @keyframes orb1 { 0%{transform:translate(0,0) scale(1)}33%{transform:translate(30vw,20vh) scale(1.15)}66%{transform:translate(15vw,50vh) scale(0.9)}100%{transform:translate(50vw,30vh) scale(1.1)} }
     @keyframes orb2 { 0%{transform:translate(0,0) scale(1)}33%{transform:translate(-25vw,-20vh) scale(1.2)}66%{transform:translate(-40vw,-10vh) scale(0.95)}100%{transform:translate(-20vw,-40vh) scale(1.05)} }
 
@@ -81,20 +81,17 @@
    .top-bar__sections { width: 100%; height: 100%; display: flex; align-items: stretch; justify-content: space-between; }
    .top-bar__section { display: flex; align-items: stretch; list-style: none; }
    .top-bar__link { display: flex; align-items: center; gap: 7px; text-decoration: none; padding: 0 16px; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--dim); border-right: 1px solid var(--border); transition: color 0.15s ease, background-color 0.15s ease; white-space: nowrap; position: relative; }
-   .top-bar__section--left.top-bar__item:first-child.top-bar__link { border-left: 1px solid var(--border); }
-   .top-bar__section--right.top-bar__link { border-right: none; border-left: 1px solid var(--border); }
    .top-bar__link:hover { color: var(--white); background-color: var(--hover-bg); }
    .top-bar__link::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.2s ease; }
    .top-bar__link:hover::after { transform: scaleX(1); }
    .top-bar__dot { width: 5px; height: 5px; border-radius: 50%; background: #1db954; display: inline-block; box-shadow: 0 0 6px rgba(29,185,84,0.7); flex-shrink: 0; }
 
-   .nav-bar { position: fixed; top: var(--top-bar-h); left: 0; right: 0; z-index: 100; height: var(--nav-bar-h); background: rgba(0,0,0,0.9); border-bottom: 1px solid var(--border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+   .nav-bar { position: fixed; top: var(--top-bar-h); left: 0; right: 0; z-index: 100; height: var(--nav-bar-h); background: rgba(0,0,0.9); border-bottom: 1px solid var(--border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
    .nav { height: 100%; display: flex; align-items: stretch; position: relative; max-width: 1000px; margin: 0 auto; }
    .nav__destination { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 0 28px; text-decoration: none; color: var(--dim); font-size: 8px; letter-spacing: 0.28em; text-transform: uppercase; border-right: 1px solid var(--border); transition: color 0.15s ease, background-color 0.15s ease; min-width: 90px; position: relative; cursor: pointer; }
    .nav__destination:first-child { border-left: 1px solid var(--border); }
    .nav__icon { width: 20px; height: 20px; fill: currentColor; transition: fill 0.15s ease, transform 0.15s ease; flex-shrink: 0; }
    .nav__destination:hover { color: var(--white); background-color: var(--hover-bg); }
-   .nav__destination:hover.nav__icon { transform: translateY(-1px); }
    .nav__destination--active { color: var(--accent); background-color: var(--active-bg); }
    .nav__destination::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: center; transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
    .nav__destination:hover::after,.nav__destination--active::after { transform: scaleX(1); }
@@ -110,24 +107,90 @@
    .hero__title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(64px, 14vw, 130px); letter-spacing: 0.1em; line-height: 1; color: var(--white); text-shadow: 0 0 100px rgba(0,0,0,1); animation: fadeUp 1.4s cubic-bezier(0.16,1,0.3,1) 0.2s both; }
    .hero__sub { font-size: 10px; letter-spacing: 0.45em; color: var(--dim); text-transform: lowercase; margin-top: 12px; margin-bottom: 32px; animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.45s both; }
 
-    /* AUDIO PLAYER WITH TRACKLIST */
-   .audio-player-wrap { width: 100%; max-width: 420px; margin: 0 auto 40px; background: rgba(255,255,255,0.025); border: 1px solid var(--border); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.55s both; }
-   .audio-player-wrap:hover { border-color: var(--border-hover); }
-   .now-playing { padding: 12px 16px; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid); border-bottom: 1px solid var(--border); text-align: center; }
-   .audio-player-wrap audio { width: 100%; height: 44px; display: block; background: #000; outline: none; }
-   .tracklist { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; }
-   .tracklist li { padding: 14px 16px; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--border); cursor: pointer; transition: all 0.15s ease; display: flex; justify-content: space-between; align-items: center; }
-   .tracklist li:last-child { border-bottom: none; }
-   .tracklist li:hover { color: var(--white); background: var(--hover-bg); }
-   .tracklist li.active { color: var(--accent); background: var(--active-bg); }
-   .tracklist li span { opacity: 0.5; font-size: 8px; }
+   /* SOUNDCLOUD PLAYER - uses Inter for clear case distinction */
+   .sc-player {
+     width: 100%;
+     max-width: 720px;
+     margin: 0 auto 40px;
+     background: #121212;
+     border: 1px solid var(--border);
+     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+     animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.55s both;
+     text-align: left;
+   }
+   .sc-player:hover { border-color: var(--border-hover); }
+   .sc-header {
+     display: grid;
+     grid-template-columns: 70px 1fr 140px;
+     gap: 18px;
+     padding: 20px;
+     background: linear-gradient(180deg, #222 0%, #151515 100%);
+   }
+   .sc-play {
+     width: 60px;
+     height: 60px;
+     border-radius: 50%;
+     background: #f50;
+     border: none;
+     cursor: pointer;
+     display: grid;
+     place-items: center;
+     transition: transform 0.15s ease, background 0.15s;
+     align-self: center;
+   }
+   .sc-play:hover { transform: scale(1.04); background: #ff6611; }
+   .sc-play svg { width: 26px; height: 26px; fill: white; margin-left: 2px; }
+   .sc-play.playing svg { margin-left: 0; }
+   .sc-info { min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+   .sc-title {
+     font-size: 16px;
+     font-weight: 500;
+     color: #fff;
+     line-height: 1.35;
+     letter-spacing: 0;
+     text-transform: none;
+   }
+   .sc-artist {
+     font-size: 12px;
+     color: #aaa;
+     font-weight: 400;
+     letter-spacing: 0;
+     text-transform: none;
+   }
+   .sc-artwork {
+     width: 140px;
+     height: 140px;
+     background: #000;
+     border: 1px solid rgba(255,255,0.08);
+     overflow: hidden;
+   }
+   .sc-artwork img { width: 100%; height: 100%; object-fit: cover; filter: contrast(1.1); }
+   .sc-waveform {
+     height: 90px;
+     background: #0e0e0e;
+     cursor: pointer;
+     position: relative;
+   }
+   .sc-meta {
+     display: flex;
+     justify-content: space-between;
+     align-items: center;
+     padding: 10px 16px;
+     background: #0a0a0a;
+     border-top: 1px solid var(--border);
+     font-family: 'DM Mono', monospace;
+     font-size: 9px;
+     letter-spacing: 0.15em;
+     text-transform: uppercase;
+     color: var(--dim);
+   }
 
    .platforms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; width: 100%; max-width: 380px; animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.65s both; margin-top: 12px; }
    .platform-link { display: flex; align-items: center; justify-content: space-between; padding: 15px 18px; background: rgba(255,255,255,0.025); border: 1px solid var(--border); text-decoration: none; color: var(--accent); font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; transition: all 0.2s ease; position: relative; overflow: hidden; }
    .platform-link:hover { border-color: var(--border-hover); color: var(--white); }
    .platform-link.wide { grid-column: 1 / -1; }
    .arrow { opacity: 0.3; transition: all 0.2s; font-size: 12px; }
-   .platform-link:hover.arrow { opacity: 1; transform: translateX(3px); }
+   .platform-link:hover .arrow { opacity: 1; transform: translateX(3px); }
 
    .page-footer { border-top: 1px solid var(--border); flex-shrink: 0; }
    .page-footer-wrapper { max-width: 960px; margin: 0 auto; padding: 48px 32px 40px; }
@@ -137,10 +200,6 @@
    .page-footer-info__title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.12em; color: var(--white); margin-bottom: 8px; }
    .page-footer-info__line { font-size: 9px; letter-spacing: 0.15em; color: var(--dim); line-height: 1.8; }
    .page-footer-social { display: flex; flex-direction: column; gap: 8px; }
-   .page-footer-section__title { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); margin-bottom: 14px; }
-   .page-footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-   .page-footer-links__item a { font-size: 9px; letter-spacing: 0.15em; color: var(--dim); text-decoration: none; text-transform: uppercase; transition: color 0.15s; }
-   .page-footer-links__item a:hover { color: var(--white); }
    .social-btn { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--dim); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; padding: 8px 12px; border: 1px solid var(--border); transition: all 0.15s ease; }
    .social-btn svg { width: 14px; height: 14px; fill: currentColor; }
    .social-btn:hover { color: var(--white); border-color: var(--border-hover); background: var(--hover-bg); }
@@ -149,7 +208,7 @@
    .footer-strip a:hover { color: var(--dim); }
 
     @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-    @media (max-width: 640px) {.nav__destination { min-width: 60px; padding: 0 16px; }.nav__label { display: none; }.top-bar__link { padding: 0 10px; font-size: 8px; }.page-footer-content { grid-template-columns: 1fr; gap: 32px; }.platforms { grid-template-columns: 1fr; }.platform-link.wide { grid-column: 1; }.audio-player-wrap { max-width: 340px; } }
+    @media (max-width: 640px) {.nav__destination { min-width: 60px; padding: 0 16px; }.nav__label { display: none; }.top-bar__link { padding: 0 10px; font-size: 8px; }.page-footer-content { grid-template-columns: 1fr; gap: 32px; }.platforms { grid-template-columns: 1fr; }.platform-link.wide { grid-column: 1; }.sc-header { grid-template-columns: 56px 1fr; padding: 16px; } .sc-artwork { display: none; } .sc-play { width: 52px; height: 52px; } }
   </style>
 </head>
 <body>
@@ -172,15 +231,15 @@
   <nav class="nav-bar" aria-label="Primary navigation">
     <div class="nav">
       <div class="nav__left">
-        <a class="nav__destination nav__destination--active" href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog" target="_blank" rel="noopener noreferrer"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.622.622 0 01-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623 0 01-.277-1.215c3.809-.87 7.077-.496 9.712 1.115.294.181.387.563.207.857zm1.223-2.722a.78 0 01-1.072.257c-2.687-1.652-6.785-2.131-9.965-1.166a.78.78 0 01-.973-.519.78.78 0 01.52-.972c3.632-1.102 8.147-.568 11.233 1.328a.78.78 0 01.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71a.937 0 11-.543-1.794c3.532-1.072 9.404-.865 13.115 1.338a.937.937 0 01-.955 1.613z"/></svg><span class="nav__label">Spotify</span></a>
+        <a class="nav__destination nav__destination--active" href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog" target="_blank" rel="noopener noreferrer"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.622.622 0 01-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623 0 01-.277-1.215c3.809-.87 7.077-.496 9.712 1.115.294.181.387.563.207.857zm1.223-2.722a.78 0 01-1.072.257c-2.687-1.652-6.785-2.131-9.965-1.166a.78 0 01-.973-.519.78.78 0 01.52-.972c3.632-1.102 8.147-.568 11.233 1.328a.78 0 01.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71a.937 0 11-.543-1.794c3.532-1.072 9.404-.865 13.115 1.338a.937.937 0 01-.955 1.613z"/></svg><span class="nav__label">Spotify</span></a>
         <span class="nav__divider" aria-hidden="true"></span>
-        <a class="nav__destination" href="https://soundcloud.com/BADFEELSGOOD" target="_blank" rel="noopener noreferrer"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M1.175 12.225c-.017 0-.033.002-.049.003v-.003c0-.464.119-.897.325-1.276.559-1.034 1.671-1.734 2.95-1.734.261 0.513.03.755.088.26-2.495 2.361-4.43 4.92-4.43 1.305 0 2.49.5 3.375 1.312.262.24.485.508.664.804.247-.073.508-.113.779-.113 1.458 0 2.64 1.179 2.64 2.634 0.147-.013.293-.038.434.123-.018.248-.027.375-.027 1.564 0 2.833 1.266 2.833 2.827S22.439 15 20.875 15H1.175C.527 15 0 14.478 0 13.831c0-.645.527-1.168 1.175-1.168z"/></svg><span class="nav__label">SoundCloud</span></a>
+        <a class="nav__destination" href="https://soundcloud.com/BADFEELSGOOD" target="_blank" rel="noopener noreferrer"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M1.175 12.225c-.017 0-.033.002-.049.003v-.003c0-.464.119-.897.325-1.276.559-1.034 1.671-1.734 2.95-1.734.261 0 .513.03.755.088.26-2.495 2.361-4.43 4.92-4.43 1.305 0 2.49.5 3.375 1.312.262.24.485.508.664.804.247-.073.508-.113.779-.113 1.458 0 2.64 1.179 2.64 2.634 0 .147-.013.293-.038.434.123-.018.248-.027.375-.027 1.564 0 2.833 1.266 2.833 2.827S22.439 15 20.875 15H1.175C.527 15 0 14.478 0 13.831c0-.645.527-1.168 1.175-1.168z"/></svg><span class="nav__label">SoundCloud</span></a>
       </div>
       <a class="nav__logo" href="https://badfeelsgood.xyz/" title="BADFEELSGOOD — Home"><img src="avatar.png" alt="BADFEELSGOOD logo" width="52" height="52"></a>
       <div class="nav__right">
-        <a class="nav__destination" href="https://www.tiktok.com/@_badfeelsgood" target="_blank" rel="noopener noreferrer"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0.54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 0 006.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg><span class="nav__label">TikTok</span></a>
+        <a class="nav__destination" href="https://www.tiktok.com/@_badfeelsgood" target="_blank" rel="noopener noreferrer"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg><span class="nav__label">TikTok</span></a>
         <span class="nav__divider" aria-hidden="true"></span>
-        <a class="nav__destination" href="https://www.instagram.com/badfeelsgood" target="_blank" rel="noopener noreferrer"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg><span class="nav__label">Instagram</span></a>
+        <a class="nav__destination" href="https://www.instagram.com/badfeelsgood" target="_blank" rel="noopener noreferrer"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg><span class="nav__label">Instagram</span></a>
       </div>
     </div>
   </nav>
@@ -191,16 +250,25 @@
         <h1 class="hero__title">BADFEELSGOOD</h1>
         <p class="hero__sub">dark music &nbsp;·&nbsp; toronto</p>
 
-        <!-- TRACK LISTING PLAYER -->
-        <div class="audio-player-wrap">
-          <div class="now-playing" id="nowPlaying">SELECT A TRACK</div>
-          <audio id="audioPlayer" controls preload="metadata">
-            <source src="track1.mp3" type="audio/mpeg">
-            Your browser does not support the audio element.
-          </audio>
-          <ul class="tracklist" id="tracklist">
-            <li data-src="https://media.badfeelsgood.xyz/TheRiver.mp3" class="active">BADFEELSGOOD - TheRiver</li>
-          </ul>
+        <!-- SOUNDCLOUD-STYLE PLAYER -->
+        <div class="sc-player">
+          <div class="sc-header">
+            <button class="sc-play" id="scPlay" aria-label="Play">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            <div class="sc-info">
+              <h2 class="sc-title">BADFEELSGOOD - The River</h2>
+              <p class="sc-artist">BADFEELSGOOD</p>
+            </div>
+            <div class="sc-artwork">
+              <img src="avatar.png" alt="The River artwork">
+            </div>
+          </div>
+          <div class="sc-waveform" id="waveform"></div>
+          <div class="sc-meta">
+            <span>Toronto, ON</span>
+            <span><span id="currentTime">0:00</span> / <span id="duration">0:00</span></span>
+          </div>
         </div>
 
         <nav class="platforms" aria-label="Stream BADFEELSGOOD music">
@@ -226,17 +294,7 @@
           </div>
           <div class="page-footer-social">
             <a class="social-btn" href="https://x.com/BADFEELSGOOD" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>X / Twitter</a>
-            <a class="social-btn" href="mailto:badfeelsgood416@gmail.com"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2.9-2 2v12c0 1.1.9 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Email</a>
-          </div>
-          <div class="page-footer-section">
-            <p class="page-footer-section__title">Music</p>
-            <ul class="page-footer-links">
-              <li class="page-footer-links__item"><a href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog" target="_blank" rel="noopener noreferrer">Spotify</a></li>
-              <li class="page-footer-links__item"><a href="https://music.apple.com/ca/artist/badfeelsgood/1556789790" target="_blank" rel="noopener noreferrer">Apple Music</a></li>
-              <li class="page-footer-links__item"><a href="https://soundcloud.com/BADFEELSGOOD" target="_blank" rel="noopener noreferrer">SoundCloud</a></li>
-              <li class="page-footer-links__item"><a href="https://www.tiktok.com/@_badfeelsgood" target="_blank" rel="noopener noreferrer">TikTok</a></li>
-              <li class="page-footer-links__item"><a href="https://www.instagram.com/badfeelsgood" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-            </ul>
+            <a class="social-btn" href="mailto:badfeelsgood416@gmail.com"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Email</a>
           </div>
         </div>
         <div class="footer-strip">
@@ -247,25 +305,49 @@
     </footer>
   </div>
 
+<script src="https://unpkg.com/wavesurfer.js@7"></script>
 <script>
-  const player = document.getElementById('audioPlayer');
-  const tracks = document.querySelectorAll('#tracklist li');
-  const nowPlaying = document.getElementById('nowPlaying');
+  const scPlay = document.getElementById('scPlay');
+  const currentTimeEl = document.getElementById('currentTime');
+  const durationEl = document.getElementById('duration');
 
-  tracks.forEach(track => {
-    track.addEventListener('click', () => {
-      tracks.forEach(t => t.classList.remove('active'));
-      track.classList.add('active');
-      player.src = track.dataset.src;
-      player.play();
-      nowPlaying.textContent = 'PLAYING — ' + track.textContent.replace(/\d+:\d+/, '').trim();
-    });
+  const wavesurfer = WaveSurfer.create({
+    container: '#waveform',
+    waveColor: '#333333',
+    progressColor: '#b8b0a0',
+    cursorColor: '#f0ece4',
+    barWidth: 2,
+    barGap: 2,
+    barRadius: 0,
+    height: 90,
+    normalize: true,
   });
 
-  player.addEventListener('ended', () => {
-    const current = document.querySelector('#tracklist li.active');
-    const next = current.nextElementSibling || tracks[0];
-    next.click();
+  wavesurfer.load('https://media.badfeelsgood.xyz/TheRiver.mp3');
+
+  scPlay.addEventListener('click', () => wavesurfer.playPause());
+
+  wavesurfer.on('play', () => {
+    scPlay.classList.add('playing');
+    scPlay.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>';
+  });
+
+  wavesurfer.on('pause', () => {
+    scPlay.classList.remove('playing');
+    scPlay.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+  });
+
+  wavesurfer.on('timeupdate', (time) => {
+    const m = Math.floor(time / 60);
+    const s = Math.floor(time % 60).toString().padStart(2, '0');
+    currentTimeEl.textContent = `${m}:${s}`;
+  });
+
+  wavesurfer.on('ready', () => {
+    const d = wavesurfer.getDuration();
+    const m = Math.floor(d / 60);
+    const s = Math.floor(d % 60).toString().padStart(2, '0');
+    durationEl.textContent = `${m}:${s}`;
   });
 </script>
 
