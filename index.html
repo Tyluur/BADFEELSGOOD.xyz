@@ -130,7 +130,7 @@
     .release.is-out .countdown { display: none; }
     .release.is-out .release__out { display: block; }
 
-   /* UNRELEASED DEMOS DROPDOWN / TRACKLIST */
+    /* UNRELEASED DEMOS DROPDOWN / TRACKLIST */
     .audio-player-wrap { width: 100%; max-width: 420px; margin: 0 auto 40px; background: rgba(255,255,255,0.025); border: 1px solid var(--border); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.55s both; position: relative; z-index: 30; }
     .audio-player-wrap:hover { border-color: var(--border-hover); }
     .now-playing { padding: 12px 16px; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--mid); border-bottom: 1px solid var(--border); text-align: center; }
@@ -313,12 +313,8 @@
   const ddTag = document.getElementById('demoTag');
 
   // ============ CLOUDFLARE AUDIO ============
-  // Base URL of your Cloudflare R2 bucket (public custom domain or r2.dev URL). Keep the trailing slash.
   const CDN = 'https://media.badfeelsgood.xyz/';
 
-  // Add a track = add one line. `file` is the path inside the bucket.
-  // (A full https:// link also works and is used as-is.)
-  // group: 'released' or 'demo'. Leave file empty ('') to show it greyed out as "soon".
   const TRACKS = [
     { title: 'Spotlight', file: 'https://media.badfeelsgood.xyz/Spotlight_2.5mp3.mp3', group: 'released' },
     { title: 'TheRiver', file: 'TheRiver.mp3',      group: 'released' },
