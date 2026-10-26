@@ -146,12 +146,16 @@
     .demo-dd__menu { display: none; max-height: 220px; overflow-y: auto; list-style: none; background: rgba(0,0,0,0.95); border-top: 1px solid var(--border); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
     .demo-dd.open .demo-dd__menu { display: block; }
     .demo-dd__group { padding: 10px 16px 8px; font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.03); pointer-events: none; }
-    .demo-dd__item { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--border); cursor: pointer; transition: all 0.15s ease; }
+    
+    /* FIX: Force left alignment, truncate properly, and prevent flex centering/wrapping issues */
+    .demo-dd__item { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 13px 16px; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid var(--border); cursor: pointer; transition: all 0.15s ease; text-align: left; }
+    .demo-dd__item b { flex: 1; min-width: 0; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    
     .demo-dd__item:last-child { border-bottom: none; }
     .demo-dd__item:hover { color: var(--white); background: var(--hover-bg); }
     .demo-dd__item.active { color: var(--accent); background: var(--active-bg); }
     .demo-dd__item.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
-    .demo-dd__item span { opacity: 0.5; font-size: 8px; }
+    .demo-dd__item span { opacity: 0.5; font-size: 8px; flex-shrink: 0; }
     .audio-player-wrap audio { width: 100%; height: 44px; display: block; background: #000; outline: none; }
     
     .tracklist { list-style: none; margin: 0; padding: 0; max-height: 220px; overflow-y: auto; }
@@ -316,13 +320,11 @@
   const CDN = 'https://media.badfeelsgood.xyz/';
 
   const TRACKS = [
-    { title: 'Killy - Same Energy [ft. BADFEELSGOOD]', file: 'https://media.badfeelsgood.xyz/Killy%20-%20Same%20Energy%20%5Bft.%20BADFEELSGOOD%5D.mp3', group: 'released' },    
-    { title: 'Bones - BlackLungs&YellowTape [ft. BADFEELSGOOD]', file: 'https://media.badfeelsgood.xyz/Bones%20-%20BlackLungs%26YellowTape%20%5Bft.%20BADFEELSGOOD%5D.4.mp3', group: 'demo' },
-    { title: 'Night Lovell - Pawn Shop [ft. BADFEELSGOOD]', file: 'https://media.badfeelsgood.xyz/Night%20Lovell%20-%20Pawn%20Shop%20%5Bft.%20BADFEELSGOOD%5D.5.mp3', group: 'demo' },
-    
+    { title: 'Bones - BlackLungs&YellowTape [ft. BADFEELSGOOD]',  file: 'https://media.badfeelsgood.xyz/Bones%20-%20BlackLungs%26YellowTape%20%5Bft.%20BADFEELSGOOD%5D.4.mp3', group: 'demo' },
+    { title: 'Killy - Same Energy [ft. BADFEELSGOOD]', file: 'https://media.badfeelsgood.xyz/Killy%20-%20Same%20Energy%20%5Bft.%20BADFEELSGOOD%5D.mp3', group: 'demo' },
+    { title: 'Night Lovell - Pawn Shop [ft. BADFEELSGOOD]',  file: 'https://media.badfeelsgood.xyz/Night%20Lovell%20-%20Pawn%20Shop%20%5Bft.%20BADFEELSGOOD%5D.5.mp3',  group: 'demo' },
     { title: 'BADFEELSGOOD - Spotlight', file: 'https://media.badfeelsgood.xyz/Spotlight_2.5mp3.mp3', group: 'demo' },
-    { title: 'BADFEELSGOOD - TheRiver', file: 'TheRiver.mp3',      group: 'released' },
-    
+    { title: 'BADFEELSGOOD - TheRiver', file: 'TheRiver.mp3',      group: 'demo' },
     { title: 'Demo 03',  file: '',                  group: 'demo' },
   ];
   // ==========================================
