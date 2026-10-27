@@ -6,11 +6,13 @@
 
   <title>BADFEELSGOOD — VALHALLA Mixtape Out October 31</title>
   <meta name="description" content="VALHALLA, the new mixtape from BADFEELSGOOD, drops October 31, 2026. Dark music from Toronto, Ontario. Stream on Spotify, Apple Music, and SoundCloud.">
-  <meta name="keywords" content="BADFEELSGOOD, VALHALLA, VALHALLA mixtape, dark music, Toronto music, Toronto artist, underground music, alternative, badfeelsgood spotify, badfeelsgood soundcloud">
   <meta name="author" content="BADFEELSGOOD">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="theme-color" content="#000000">
   <link rel="canonical" href="https://badfeelsgood.xyz/">
+  <link rel="icon" type="image/png" href="/avatar.png">
+  <link rel="apple-touch-icon" href="/avatar.png">
+  <meta name="format-detection" content="telephone=no">
 
   <meta property="og:type" content="music.musician">
   <meta property="og:title" content="BADFEELSGOOD — VALHALLA Mixtape Out October 31">
@@ -19,11 +21,12 @@
   <meta property="og:image" content="https://badfeelsgood.xyz/avatar.png">
   <meta property="og:image:width" content="400">
   <meta property="og:image:height" content="400">
+  <meta property="og:image:type" content="image/png">
   <meta property="og:image:alt" content="BADFEELSGOOD artist avatar">
   <meta property="og:site_name" content="BADFEELSGOOD">
   <meta property="og:locale" content="en_CA">
 
-  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary">
   <meta name="twitter:site" content="@BADFEELSGOOD">
   <meta name="twitter:creator" content="@BADFEELSGOOD">
   <meta name="twitter:title" content="BADFEELSGOOD — VALHALLA Mixtape Out October 31">
@@ -34,33 +37,63 @@
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "MusicGroup",
-    "name": "BADFEELSGOOD",
-    "url": "https://badfeelsgood.xyz",
-    "image": "https://badfeelsgood.xyz/avatar.png",
-    "description": "Dark music artist from Toronto, Ontario.",
-    "genre": ["Dark Music", "Alternative", "Underground"],
-    "foundingLocation": {"@type": "Place","name": "Toronto, Ontario, Canada"},
-    "album": {
-      "@type": "MusicAlbum",
-      "name": "VALHALLA",
-      "byArtist": {"@type": "MusicGroup", "name": "BADFEELSGOOD"},
-      "datePublished": "2026-10-31"
-    },
-    "sameAs": [
-      "https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog",
-      "https://music.apple.com/ca/artist/badfeelsgood/1556789790",
-      "https://soundcloud.com/BADFEELSGOOD",
-      "https://www.instagram.com/badfeelsgood",
-      "https://www.tiktok.com/@_badfeelsgood",
-      "https://x.com/BADFEELSGOOD"
-    ],
-    "contactPoint": {"@type": "ContactPoint","email": "badfeelsgood416@gmail.com","contactType": "General Inquiries"}
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://badfeelsgood.xyz/#website",
+        "url": "https://badfeelsgood.xyz/",
+        "name": "BADFEELSGOOD",
+        "inLanguage": "en-CA",
+        "publisher": { "@id": "https://badfeelsgood.xyz/#artist" }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://badfeelsgood.xyz/#webpage",
+        "url": "https://badfeelsgood.xyz/",
+        "name": "BADFEELSGOOD — VALHALLA Mixtape Out October 31",
+        "description": "VALHALLA, the new mixtape from BADFEELSGOOD, drops October 31, 2026. Dark music from Toronto, Ontario.",
+        "inLanguage": "en-CA",
+        "isPartOf": { "@id": "https://badfeelsgood.xyz/#website" },
+        "about": { "@id": "https://badfeelsgood.xyz/#artist" },
+        "primaryImageOfPage": { "@type": "ImageObject", "url": "https://badfeelsgood.xyz/avatar.png", "width": 400, "height": 400 }
+      },
+      {
+        "@type": "MusicGroup",
+        "@id": "https://badfeelsgood.xyz/#artist",
+        "name": "BADFEELSGOOD",
+        "url": "https://badfeelsgood.xyz/",
+        "image": "https://badfeelsgood.xyz/avatar.png",
+        "description": "Dark music artist from Toronto, Ontario.",
+        "genre": ["Dark Music", "Alternative", "Underground"],
+        "foundingLocation": { "@type": "Place", "name": "Toronto, Ontario, Canada" },
+        "album": { "@id": "https://badfeelsgood.xyz/#valhalla" },
+        "sameAs": [
+          "https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog",
+          "https://music.apple.com/ca/artist/badfeelsgood/1556789790",
+          "https://soundcloud.com/BADFEELSGOOD",
+          "https://www.instagram.com/badfeelsgood",
+          "https://www.tiktok.com/@_badfeelsgood",
+          "https://x.com/BADFEELSGOOD"
+        ],
+        "contactPoint": { "@type": "ContactPoint", "email": "badfeelsgood416@gmail.com", "contactType": "General Inquiries" }
+      },
+      {
+        "@type": "MusicAlbum",
+        "@id": "https://badfeelsgood.xyz/#valhalla",
+        "name": "VALHALLA",
+        "url": "https://badfeelsgood.xyz/",
+        "byArtist": { "@id": "https://badfeelsgood.xyz/#artist" },
+        "datePublished": "2026-10-31",
+        "albumProductionType": "https://schema.org/MixtapeAlbum",
+        "albumReleaseType": "https://schema.org/AlbumRelease"
+      }
+    ]
   }
   </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://media.badfeelsgood.xyz">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 
   <style>
@@ -213,18 +246,15 @@
     .arrow { opacity: 0.4; transition: opacity 0.2s, transform 0.2s; font-size: 11px; }
     .platform-link:hover .arrow { opacity: 1; transform: translate(2px,-2px); }
 
-    /* FOOTER — three real columns now (was a 2-col grid with 3 children) */
+    /* FOOTER */
     .page-footer { border-top: 1px solid var(--border); background: #000; width: 100%; }
     .page-footer-wrapper { max-width: 960px; margin: 0 auto; padding: 48px 20px 8px; }
-    .page-footer-content { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 40px; align-items: start; }
+    .page-footer-content { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: start; }
     .page-footer-info { display: flex; gap: 16px; align-items: flex-start; }
     .page-footer-info__logo { width: 36px; height: 36px; flex-shrink: 0; object-fit: contain; opacity: 0.5; filter: grayscale(100%); }
     .page-footer-info__title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.12em; color: var(--white); margin-bottom: 8px; }
     .page-footer-info__line { font-size: 10px; letter-spacing: 0.1em; color: var(--dim); line-height: 1.8; }
     .page-footer-section__title { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); margin-bottom: 14px; }
-    .page-footer-links { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .page-footer-links__item a { font-size: 10px; letter-spacing: 0.15em; color: var(--dim); text-decoration: none; text-transform: uppercase; transition: color 0.15s; padding: 4px 0; display: inline-block; }
-    .page-footer-links__item a:hover { color: var(--white); }
     .page-footer-social { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
     .social-btn { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--dim); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; padding: 10px 14px; border: 1px solid var(--border); transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease; border-radius: var(--radius); min-height: 44px; background: rgba(255,255,255,0.01); }
     .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
@@ -348,16 +378,6 @@
               <p class="page-footer-info__line">dark music from toronto, ontario.</p>
               <p class="page-footer-info__line">VALHALLA mixtape — october 31.</p>
             </div>
-          </div>
-          <div class="page-footer-section">
-            <p class="page-footer-section__title">Music</p>
-            <ul class="page-footer-links">
-              <li class="page-footer-links__item"><a href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog" target="_blank" rel="noopener noreferrer">Spotify</a></li>
-              <li class="page-footer-links__item"><a href="https://music.apple.com/ca/artist/badfeelsgood/1556789790" target="_blank" rel="noopener noreferrer">Apple Music</a></li>
-              <li class="page-footer-links__item"><a href="https://soundcloud.com/BADFEELSGOOD" target="_blank" rel="noopener noreferrer">SoundCloud</a></li>
-              <li class="page-footer-links__item"><a href="https://www.tiktok.com/@_badfeelsgood" target="_blank" rel="noopener noreferrer">TikTok</a></li>
-              <li class="page-footer-links__item"><a href="https://www.instagram.com/badfeelsgood" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-            </ul>
           </div>
           <div class="page-footer-section">
             <p class="page-footer-section__title">Contact</p>
