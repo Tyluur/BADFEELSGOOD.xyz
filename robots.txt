@@ -1,0 +1,5 @@
+# https://badfeelsgood.xyz/robots.txt
+User-agent: *
+Allow: /
+
+Sitemap: https://badfeelsgood.xyz/sitemap.xml
