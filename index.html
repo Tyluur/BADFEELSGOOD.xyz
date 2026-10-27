@@ -9,6 +9,7 @@
   <meta name="keywords" content="BADFEELSGOOD, VALHALLA, VALHALLA mixtape, dark music, Toronto music, Toronto artist, underground music, alternative, badfeelsgood spotify, badfeelsgood soundcloud">
   <meta name="author" content="BADFEELSGOOD">
   <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#000000">
   <link rel="canonical" href="https://badfeelsgood.xyz/">
 
   <meta property="og:type" content="music.musician">
@@ -64,15 +65,19 @@
 
   <style>
     :root {
-      --black: #000; --white: #f0ece4; --dim: #666; --mid: #888; --accent: #b8b0a0;
-      --border: rgba(255,255,255,0.06); --border-hover: rgba(255,255,255,0.14);
-      --hover-bg: rgba(255,255,255,0.03); --active-bg: rgba(255,255,255,0.05);
+      --black: #000; --white: #f0ece4; --dim: #7a7a7a; --mid: #9a9a9a; --accent: #b8b0a0;
+      --border: rgba(255,255,255,0.08); --border-hover: rgba(255,255,255,0.18);
+      --hover-bg: rgba(255,255,255,0.04); --active-bg: rgba(255,255,255,0.06);
       --top-bar-h: 36px; --nav-bar-h: 68px; --chrome-h: calc(var(--top-bar-h) + var(--nav-bar-h));
+      --panel: rgba(255,255,255,0.02);
+      --radius: 4px;
     }
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    
+
     html { min-height: 100%; scroll-behavior: smooth; }
     body { width: 100%; min-height: 100vh; background: #000; color: var(--white); font-family: 'DM Mono', monospace; overflow-x: hidden; position: relative; }
+
+    a:focus-visible, button:focus-visible, input:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
 
     .bg { position: fixed; inset: 0; z-index: 0; background: #000; overflow: hidden; pointer-events: none; }
     .bg::before,.bg::after { content: ''; position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.18; will-change: transform; }
@@ -84,11 +89,12 @@
     .grain { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0.04; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 128px; animation: grain 0.35s steps(1) infinite; }
     @keyframes grain { 0%{background-position:0 0}25%{background-position:-64px 32px}50%{background-position:32px -64px}75%{background-position:-32px 64px}100%{background-position:64px -32px} }
 
-    .top-bar { position: sticky; top: 0; left: 0; right: 0; z-index: 100; height: var(--top-bar-h); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); }
+    /* TOP BAR */
+    .top-bar { position: sticky; top: 0; z-index: 100; height: var(--top-bar-h); background: rgba(0,0,0,0.95); border-bottom: 1px solid var(--border); }
     .top-bar__sections { width: 100%; height: 100%; display: flex; align-items: stretch; justify-content: space-between; overflow-x: auto; scrollbar-width: none; }
     .top-bar__sections::-webkit-scrollbar { display: none; }
     .top-bar__section { display: flex; align-items: stretch; list-style: none; flex-shrink: 0; }
-    .top-bar__link { display: flex; align-items: center; gap: 7px; text-decoration: none; padding: 0 14px; font-size: 8px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); border-right: 1px solid var(--border); transition: color 0.15s ease, background-color 0.15s ease; white-space: nowrap; position: relative; min-height: var(--top-bar-h); }
+    .top-bar__link { display: flex; align-items: center; gap: 7px; text-decoration: none; padding: 0 16px; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); border-right: 1px solid var(--border); transition: color 0.15s ease, background-color 0.15s ease; white-space: nowrap; position: relative; min-height: var(--top-bar-h); }
     .top-bar__section--left .top-bar__item:first-child .top-bar__link { border-left: 1px solid var(--border); }
     .top-bar__section--right .top-bar__link { border-right: none; border-left: 1px solid var(--border); }
     .top-bar__link:hover { color: var(--white); background-color: var(--hover-bg); }
@@ -96,136 +102,152 @@
     .top-bar__link:hover::after { transform: scaleX(1); }
     .top-bar__dot { width: 5px; height: 5px; border-radius: 50%; background: #1db954; display: inline-block; box-shadow: 0 0 6px rgba(29,185,84,0.7); flex-shrink: 0; }
 
-    .nav-bar { position: sticky; top: var(--top-bar-h); left: 0; right: 0; z-index: 99; height: var(--nav-bar-h); background: rgba(0,0,0,0.92); border-bottom: 1px solid var(--border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
-    .nav { height: 100%; display: flex; align-items: stretch; justify-content: space-between; position: relative; max-width: 1000px; margin: 0 auto; padding: 0 12px; }
-    .nav__destination { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 0 16px; text-decoration: none; color: var(--dim); font-size: 8px; letter-spacing: 0.25em; text-transform: uppercase; border-right: 1px solid var(--border); transition: color 0.15s ease, background-color 0.15s ease; position: relative; cursor: pointer; min-height: var(--nav-bar-h); }
-    .nav__destination:first-child { border-left: 1px solid var(--border); }
-    .nav__icon { width: 18px; height: 18px; fill: currentColor; transition: fill 0.15s ease, transform 0.15s ease; flex-shrink: 0; }
+    /* NAV — full width so it lines up with the top bar */
+    .nav-bar { position: sticky; top: var(--top-bar-h); z-index: 99; height: var(--nav-bar-h); background: rgba(0,0,0,0.92); border-bottom: 1px solid var(--border); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    .nav { height: 100%; display: flex; align-items: stretch; justify-content: space-between; position: relative; width: 100%; padding: 0 16px; }
+    .nav__destination { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-width: 84px; padding: 0 16px; text-decoration: none; color: var(--dim); font-size: 8px; letter-spacing: 0.25em; text-transform: uppercase; transition: color 0.15s ease, background-color 0.15s ease; position: relative; cursor: pointer; min-height: var(--nav-bar-h); }
+    .nav__icon { width: 18px; height: 18px; fill: currentColor; transition: transform 0.15s ease; flex-shrink: 0; }
     .nav__destination:hover { color: var(--white); background-color: var(--hover-bg); }
     .nav__destination:hover .nav__icon { transform: translateY(-1px); }
-    .nav__destination--active { color: var(--accent); background-color: var(--active-bg); }
     .nav__destination::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: center; transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-    .nav__destination:hover::after,.nav__destination--active::after { transform: scaleX(1); }
-    .nav__left { display: flex; align-items: stretch; }
-    .nav__right { display: flex; align-items: stretch; }
-    .nav__logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; text-decoration: none; pointer-events: auto; z-index: 2; }
+    .nav__destination:hover::after { transform: scaleX(1); }
+    .nav__left, .nav__right { display: flex; align-items: stretch; }
+    .nav__logo { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; text-decoration: none; z-index: 2; }
     .nav__logo img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 8px rgba(255,255,255,0.1)); transition: filter 0.25s ease, transform 0.25s ease; }
     .nav__logo:hover img { filter: drop-shadow(0 0 20px rgba(255,255,255,0.3)); transform: scale(1.05); }
     .nav__divider { width: 1px; background: var(--border); align-self: stretch; flex-shrink: 0; }
 
+    /* HERO */
     .page { position: relative; z-index: 5; width: 100%; display: flex; flex-direction: column; min-height: calc(100vh - var(--chrome-h)); }
-    .hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 48px 20px 80px; text-align: center; width: 100%; max-width: 600px; margin: 0 auto; }
-    .hero__title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(52px, 13vw, 116px); letter-spacing: 0.08em; line-height: 0.95; color: var(--white); text-shadow: 0 0 60px rgba(0,0,0,0.9); animation: fadeUp 1.4s cubic-bezier(0.16,1,0.3,1) 0.2s both; word-break: break-word; width: 100%; }
-    .hero__sub { font-size: 10px; letter-spacing: 0.4em; color: var(--dim); text-transform: lowercase; margin-top: 10px; margin-bottom: 32px; animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.45s both; }
+    .hero { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 64px 20px 88px; text-align: center; width: 100%; max-width: 760px; margin: 0 auto; }
+    .hero__title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(36px, 12.5vw, 112px);
+      letter-spacing: 0.08em; padding-left: 0.08em; /* balances trailing letter-spacing so it's truly centered */
+      line-height: 0.95; color: var(--white);
+      text-shadow: 0 0 60px rgba(0,0,0,0.9);
+      white-space: nowrap; width: 100%;
+      animation: fadeUp 1.4s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+    }
+    .hero__sub { font-size: 10px; letter-spacing: 0.4em; padding-left: 0.4em; color: var(--dim); text-transform: lowercase; margin-top: 14px; margin-bottom: 40px; animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.45s both; }
 
-    /* VALHALLA RELEASE BLOCK */
-    .release { width: 100%; max-width: 420px; margin: 0 auto 24px; padding: 24px 16px 20px; border: 1px solid var(--border); background: rgba(255,255,255,0.015); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.5s both; border-radius: 4px; transition: border-color 0.2s ease, background-color 0.2s ease; }
+    /* RELEASE */
+    .release { width: 100%; max-width: 420px; margin: 0 auto 16px; padding: 28px 16px 20px; border: 1px solid var(--border); background: var(--panel); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.5s both; border-radius: var(--radius); transition: border-color 0.2s ease, background-color 0.2s ease; }
     .release:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.03); }
-    .release__label { font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--mid); }
-    .release__title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px, 9vw, 64px); letter-spacing: 0.15em; line-height: 1; margin: 8px 0 4px; padding-left: 0.1em; color: var(--white); }
-    .release__date { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
-    .countdown { display: flex; justify-content: center; gap: 4px; width: 100%; }
-    .countdown__cell { flex: 1; min-width: 0; padding: 8px 4px; border: 1px solid var(--border); background: rgba(255,255,255,0.01); }
-    .countdown__num { display: block; font-family: 'Bebas Neue', sans-serif; font-size: clamp(22px, 6vw, 28px); letter-spacing: 0.05em; color: var(--white); line-height: 1.1; }
-    .countdown__unit { font-size: 7px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .release__out { display: none; font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--white); }
+    .release__label { font-size: 9px; letter-spacing: 0.35em; padding-left: 0.35em; text-transform: uppercase; color: var(--mid); }
+    .release__title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px, 11vw, 64px); letter-spacing: 0.15em; padding-left: 0.15em; line-height: 1; margin: 10px 0 6px; color: var(--white); }
+    .release__date { font-size: 9px; letter-spacing: 0.3em; padding-left: 0.3em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px; }
+    .countdown { display: flex; justify-content: center; gap: 6px; width: 100%; }
+    .countdown__cell { flex: 1; min-width: 0; padding: 10px 4px 8px; border: 1px solid var(--border); background: rgba(255,255,255,0.01); border-radius: 2px; }
+    .countdown__num { display: block; font-family: 'Bebas Neue', sans-serif; font-size: clamp(24px, 7vw, 30px); letter-spacing: 0.05em; color: var(--white); line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .countdown__unit { font-size: 8px; letter-spacing: 0.2em; padding-left: 0.2em; text-transform: uppercase; color: var(--dim); display: block; margin-top: 2px; }
+    .release__out { display: none; font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--white); padding: 14px 0 6px; }
     .release.is-out .countdown { display: none; }
     .release.is-out .release__out { display: block; }
 
-    /* GLASSMORPHIC TRANSPARENT AUDIO PLAYER WRAPPER */
-    .audio-player-wrap { 
-      width: 100%; 
-      max-width: 420px; 
-      margin: 0 auto 32px; 
-      background: rgba(255, 255, 255, 0.015); 
-      border: 1px solid rgba(255, 255, 255, 0.06); 
-      backdrop-filter: blur(16px); 
-      -webkit-backdrop-filter: blur(16px); 
-      animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.55s both; 
-      border-radius: 4px; 
-      position: relative; 
-      z-index: 30; 
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+    /* PLAYER */
+    .audio-player-wrap {
+      width: 100%; max-width: 420px; margin: 0 auto 16px;
+      background: var(--panel); border: 1px solid var(--border);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.55s both;
+      border-radius: var(--radius); position: relative; z-index: 30;
+      box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+      transition: border-color 0.25s ease, background-color 0.25s ease;
     }
-    .audio-player-wrap:hover { 
-      border-color: rgba(255, 255, 255, 0.15); 
-      background: rgba(255, 255, 255, 0.03); 
-    }
-    
-    .demo-dd { position: relative; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-    .demo-dd__btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; background: transparent; border: 0; color: var(--mid); font-family: inherit; font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: color 0.15s ease, background-color 0.15s ease; text-align: left; min-height: 48px; }
-    .demo-dd__btn:hover, .demo-dd.open .demo-dd__btn { color: var(--white); background: rgba(255, 255, 255, 0.04); }
-    .demo-dd__tag { color: var(--accent); border: 1px solid rgba(255, 255, 255, 0.12); padding: 2px 6px; font-size: 8px; letter-spacing: 0.15em; flex-shrink: 0; background: rgba(255,255,255,0.02); }
+    .audio-player-wrap:hover { border-color: var(--border-hover); background: rgba(255,255,255,0.03); }
+
+    .demo-dd { position: relative; border-bottom: 1px solid var(--border); }
+    .demo-dd__btn { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 16px; background: transparent; border: 0; color: var(--mid); font-family: inherit; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: color 0.15s ease, background-color 0.15s ease; text-align: left; min-height: 52px; border-radius: var(--radius) var(--radius) 0 0; }
+    .demo-dd__btn:hover, .demo-dd.open .demo-dd__btn { color: var(--white); background: rgba(255,255,255,0.04); }
+    .demo-dd__tag { color: var(--accent); border: 1px solid rgba(255,255,255,0.14); padding: 3px 7px; font-size: 8px; letter-spacing: 0.15em; flex-shrink: 0; background: rgba(255,255,255,0.02); border-radius: 2px; }
     .demo-dd__label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .demo-dd__chev { opacity: 0.6; font-size: 12px; transition: transform 0.2s ease; flex-shrink: 0; }
     .demo-dd.open .demo-dd__chev { transform: rotate(180deg); }
-    
-    .demo-dd__menu { 
-      display: none; 
-      max-height: 260px; 
-      overflow-y: auto; 
-      list-style: none; 
-      background: rgba(8, 8, 8, 0.88); 
-      border-top: 1px solid rgba(255, 255, 255, 0.06); 
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      -webkit-overflow-scrolling: touch; 
-    }
-    .demo-dd.open .demo-dd__menu { display: block; }
-    .demo-dd__group { padding: 10px 16px; font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); border-bottom: 1px solid rgba(255, 255, 255, 0.05); background: rgba(255, 255, 255, 0.02); pointer-events: none; position: sticky; top: 0; z-index: 2; }
-    
-    .demo-dd__item { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid rgba(255, 255, 255, 0.04); cursor: pointer; transition: all 0.15s ease; text-align: left; min-height: 48px; }
-    .demo-dd__item b { flex: 1; min-width: 0; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: normal; }
-    .demo-dd__item:last-child { border-bottom: none; }
-    .demo-dd__item:hover, .demo-dd__item:active { color: var(--white); background: rgba(255, 255, 255, 0.04); }
-    .demo-dd__item.active { color: var(--accent); background: rgba(255, 255, 255, 0.06); }
-    .demo-dd__item.disabled { opacity: 0.35; cursor: default; pointer-events: none; }
-    .demo-dd__item span { opacity: 0.5; font-size: 8px; flex-shrink: 0; }
-    
-    /* Transparent styled native audio element wrapper */
-    .audio-player-wrap audio { width: 100%; height: 44px; display: block; background: transparent; outline: none; opacity: 0.85; transition: opacity 0.2s ease; }
-    .audio-player-wrap audio:hover { opacity: 1; }
 
-    /* STREAMING PLATFORMS GRID */
-    .platforms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; max-width: 420px; animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.65s both; margin-top: 4px; }
-    .platform-link { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: rgba(255,255,255,0.015); border: 1px solid var(--border); text-decoration: none; color: var(--accent); font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; transition: all 0.2s ease; position: relative; overflow: hidden; min-height: 48px; border-radius: 4px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+    /* menu floats over the content instead of pushing it down */
+    .demo-dd__menu {
+      display: none; position: absolute; left: -1px; right: -1px; top: 100%;
+      max-height: 300px; overflow-y: auto; list-style: none;
+      background: rgba(10,10,10,0.97);
+      border: 1px solid var(--border-hover); border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.7);
+      -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
+      scrollbar-width: thin; scrollbar-color: #333 transparent;
+    }
+    .demo-dd.open .demo-dd__menu { display: block; animation: menuIn 0.18s ease both; }
+    @keyframes menuIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    .demo-dd__group { padding: 10px 16px; font-size: 8px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); border-bottom: 1px solid var(--border); background: #0d0d0d; pointer-events: none; position: sticky; top: 0; z-index: 2; }
+    .demo-dd__item { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); border-bottom: 1px solid rgba(255,255,255,0.04); cursor: pointer; transition: color 0.15s ease, background-color 0.15s ease; text-align: left; min-height: 48px; }
+    .demo-dd__item b { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: normal; }
+    .demo-dd__item:hover, .demo-dd__item:active { color: var(--white); background: rgba(255,255,255,0.05); }
+    .demo-dd__item.active { color: var(--accent); background: rgba(255,255,255,0.06); }
+    .demo-dd__item.active span { opacity: 1; }
+    .demo-dd__item span { opacity: 0.5; font-size: 8px; flex-shrink: 0; }
+
+    /* custom controls (replaces the light-grey native player) */
+    .controls { display: flex; align-items: center; gap: 6px; padding: 10px 14px 12px 10px; }
+    .ctl { width: 36px; height: 36px; display: grid; place-items: center; background: transparent; border: 0; color: var(--mid); cursor: pointer; border-radius: 50%; transition: color 0.15s ease, background-color 0.15s ease; flex-shrink: 0; }
+    .ctl svg { width: 16px; height: 16px; fill: currentColor; }
+    .ctl:hover { color: var(--white); background: var(--hover-bg); }
+    .ctl--play { width: 40px; height: 40px; border: 1px solid var(--border-hover); color: var(--white); }
+    .ctl--play svg { width: 16px; height: 16px; }
+    .ctl--play:hover { background: rgba(255,255,255,0.1); }
+    .ctl--play .i-pause { display: none; }
+    .is-playing .ctl--play .i-play { display: none; }
+    .is-playing .ctl--play .i-pause { display: block; }
+    .time { font-size: 9px; letter-spacing: 0.08em; color: var(--dim); font-variant-numeric: tabular-nums; min-width: 32px; text-align: center; flex-shrink: 0; }
+    .seek { -webkit-appearance: none; appearance: none; flex: 1; min-width: 0; height: 24px; background: transparent; cursor: pointer; --p: 0%; }
+    .seek::-webkit-slider-runnable-track { height: 2px; border-radius: 2px; background: linear-gradient(to right, var(--accent) var(--p), rgba(255,255,255,0.14) var(--p)); }
+    .seek::-moz-range-track { height: 2px; border-radius: 2px; background: rgba(255,255,255,0.14); }
+    .seek::-moz-range-progress { height: 2px; background: var(--accent); }
+    .seek::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; margin-top: -4px; border-radius: 50%; background: var(--white); border: 0; transition: transform 0.15s ease; }
+    .seek::-moz-range-thumb { width: 10px; height: 10px; border-radius: 50%; background: var(--white); border: 0; }
+    .seek:hover::-webkit-slider-thumb { transform: scale(1.3); }
+
+    /* PLATFORMS */
+    .platforms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; max-width: 420px; animation: fadeUp 1.2s cubic-bezier(0.16,1,0.3,1) 0.65s both; margin-top: 8px; }
+    .platform-link { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--panel); border: 1px solid var(--border); text-decoration: none; color: var(--accent); font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease; min-height: 52px; border-radius: var(--radius); }
     .platform-link:hover, .platform-link:active { border-color: var(--border-hover); color: var(--white); background: var(--hover-bg); }
     .platform-link.wide { grid-column: 1 / -1; }
-    .arrow { opacity: 0.4; transition: all 0.2s; font-size: 11px; }
-    .platform-link:hover .arrow { opacity: 1; transform: translateX(3px); }
+    .arrow { opacity: 0.4; transition: opacity 0.2s, transform 0.2s; font-size: 11px; }
+    .platform-link:hover .arrow { opacity: 1; transform: translate(2px,-2px); }
 
-    /* FOOTER */
+    /* FOOTER — three real columns now (was a 2-col grid with 3 children) */
     .page-footer { border-top: 1px solid var(--border); background: #000; width: 100%; }
-    .page-footer-wrapper { max-width: 960px; margin: 0 auto; padding: 40px 20px 32px; }
-    .page-footer-content { display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: start; }
+    .page-footer-wrapper { max-width: 960px; margin: 0 auto; padding: 48px 20px 8px; }
+    .page-footer-content { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 40px; align-items: start; }
     .page-footer-info { display: flex; gap: 16px; align-items: flex-start; }
-    .page-footer-info__logo { width: 36px; height: 36px; flex-shrink: 0; object-fit: contain; opacity: 0.4; filter: grayscale(100%); }
-    .page-footer-info__title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.12em; color: var(--white); margin-bottom: 6px; }
-    .page-footer-info__line { font-size: 9px; letter-spacing: 0.12em; color: var(--dim); line-height: 1.7; word-break: break-word; }
-    .page-footer-social { display: flex; flex-direction: column; gap: 8px; }
-    .page-footer-section__title { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); margin-bottom: 12px; }
-    .page-footer-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-    .page-footer-links__item a { font-size: 9px; letter-spacing: 0.15em; color: var(--dim); text-decoration: none; text-transform: uppercase; transition: color 0.15s; padding: 2px 0; display: inline-block; }
+    .page-footer-info__logo { width: 36px; height: 36px; flex-shrink: 0; object-fit: contain; opacity: 0.5; filter: grayscale(100%); }
+    .page-footer-info__title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.12em; color: var(--white); margin-bottom: 8px; }
+    .page-footer-info__line { font-size: 10px; letter-spacing: 0.1em; color: var(--dim); line-height: 1.8; }
+    .page-footer-section__title { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--mid); margin-bottom: 14px; }
+    .page-footer-links { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .page-footer-links__item a { font-size: 10px; letter-spacing: 0.15em; color: var(--dim); text-decoration: none; text-transform: uppercase; transition: color 0.15s; padding: 4px 0; display: inline-block; }
     .page-footer-links__item a:hover { color: var(--white); }
-    .social-btn { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--dim); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; padding: 10px 14px; border: 1px solid var(--border); transition: all 0.15s ease; border-radius: 4px; min-height: 44px; background: rgba(255,255,255,0.01); }
+    .page-footer-social { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+    .social-btn { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--dim); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; padding: 10px 14px; border: 1px solid var(--border); transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease; border-radius: var(--radius); min-height: 44px; background: rgba(255,255,255,0.01); }
     .social-btn svg { width: 14px; height: 14px; fill: currentColor; flex-shrink: 0; }
     .social-btn:hover { color: var(--white); border-color: var(--border-hover); background: var(--hover-bg); }
-    .footer-strip { border-top: 1px solid var(--border); padding: 16px 20px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; max-width: 960px; margin: 0 auto; }
-    .footer-strip span, .footer-strip a { font-size: 8px; letter-spacing: 0.18em; color: #444; text-transform: uppercase; text-decoration: none; transition: color 0.15s; }
-    .footer-strip a:hover { color: var(--dim); }
+    .footer-strip { border-top: 1px solid var(--border); margin-top: 40px; padding: 18px 0 28px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+    .footer-strip span, .footer-strip a { font-size: 9px; letter-spacing: 0.16em; color: #5a5a5a; text-transform: uppercase; text-decoration: none; transition: color 0.15s; }
+    .footer-strip a:hover { color: var(--mid); }
 
     @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    }
 
     @media (max-width: 768px) {
       :root { --top-bar-h: 34px; --nav-bar-h: 64px; }
-      .nav__destination { min-width: 56px; padding: 0 12px; font-size: 7px; }
+      .nav { padding: 0 8px; }
+      .nav__destination { min-width: 56px; padding: 0 12px; }
       .nav__label { display: none; }
-      .top-bar__link { padding: 0 12px; font-size: 7.5px; }
-      .page-footer-content { grid-template-columns: 1fr; gap: 28px; }
+      .top-bar__link { padding: 0 12px; font-size: 8px; }
+      .hero { padding: 40px 16px 64px; }
       .platforms { grid-template-columns: 1fr; }
       .platform-link.wide { grid-column: 1; }
-      .hero { padding: 36px 16px 60px; }
+      .page-footer-content { grid-template-columns: 1fr; gap: 32px; }
       .footer-strip { flex-direction: column; text-align: center; gap: 8px; }
     }
   </style>
@@ -250,15 +272,15 @@
   <nav class="nav-bar" aria-label="Primary navigation">
     <div class="nav">
       <div class="nav__left">
-        <a class="nav__destination nav__destination--active" href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog" target="_blank" rel="noopener noreferrer" aria-label="Spotify"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10-4.477 10-10S17.523 2 12 2zm4.586 14.424a.622.622 0 01-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.623 0 01-.277-1.215c3.809-.87 7.077-.496 9.712 1.115.294.181.387.563.207.857zm1.223-2.722a.78 0 01-1.072.257c-2.687-1.652-6.785-2.131-9.965-1.166a.78.78 0 01-.973-.519.78.78 0 01.52-.972c3.632-1.102 8.147-.568 11.233 1.328a.78.78 0 01.257 1.072zm.105-2.835C14.692 8.95 9.375 8.775 6.297 9.71a.937.937 0 11-.543-1.794c3.532-1.072 9.404-.865 13.115 1.338a.937.937 0 01-.955 1.613z"/></svg><span class="nav__label">Spotify</span></a>
+        <a class="nav__destination" href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog" target="_blank" rel="noopener noreferrer" aria-label="Spotify"><svg class="nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg><span class="nav__label">Spotify</span></a>
         <span class="nav__divider" aria-hidden="true"></span>
-        <a class="nav__destination" href="https://soundcloud.com/BADFEELSGOOD" target="_blank" rel="noopener noreferrer" aria-label="SoundCloud"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M1.175 12.225c-.017 0-.033.002-.049.003v-.003c0-.464.119-.897.325-1.276.559-1.034 1.671-1.734 2.95-1.734.261 0.513.03.755.088.26-2.495 2.361-4.43 4.92-4.43 1.305 0 2.49.5 3.375 1.312.262.24.485.508.664.804.247-.073.508-.113.779-.113 1.458 0 2.64 1.179 2.64 2.634 0.147-.013.293-.038.434.123-.018.248-.027.375-.027 1.564 0 2.833 1.266 2.833 2.827S22.439 15 20.875 15H1.175C.527 15 0 14.478 0 13.831c0-.645.527-1.168 1.175-1.168z"/></svg><span class="nav__label">SoundCloud</span></a>
+        <a class="nav__destination" href="https://soundcloud.com/BADFEELSGOOD" target="_blank" rel="noopener noreferrer" aria-label="SoundCloud"><svg class="nav__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="12" width="1.4" height="5" rx=".7"/><rect x="3.6" y="10.5" width="1.4" height="6.5" rx=".7"/><rect x="6.2" y="9" width="1.4" height="8" rx=".7"/><path d="M9 17V8.4A5 5 0 0 1 13.3 6.5a5.5 5.5 0 0 1 4.9 3.1A3.7 3.7 0 0 1 19.6 17z"/></svg><span class="nav__label">SoundCloud</span></a>
       </div>
       <a class="nav__logo" href="https://badfeelsgood.xyz/" title="BADFEELSGOOD — Home"><img src="avatar.png" alt="BADFEELSGOOD logo" width="44" height="44" onerror="this.style.display='none'"></a>
       <div class="nav__right">
-        <a class="nav__destination" href="https://www.tiktok.com/@_badfeelsgood" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0.54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.33-6.33 6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg><span class="nav__label">TikTok</span></a>
+        <a class="nav__destination" href="https://www.tiktok.com/@_badfeelsgood" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><svg class="nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg><span class="nav__label">TikTok</span></a>
         <span class="nav__divider" aria-hidden="true"></span>
-        <a class="nav__destination" href="https://www.instagram.com/badfeelsgood" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg class="nav__icon" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg><span class="nav__label">Instagram</span></a>
+        <a class="nav__destination" href="https://www.instagram.com/badfeelsgood" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg class="nav__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg><span class="nav__label">Instagram</span></a>
       </div>
     </div>
   </nav>
@@ -269,7 +291,6 @@
         <h1 class="hero__title">BADFEELSGOOD</h1>
         <p class="hero__sub">dark music &nbsp;·&nbsp; toronto</p>
 
-        <!-- VALHALLA RELEASE + COUNTDOWN -->
         <section class="release" id="release" aria-label="VALHALLA mixtape release">
           <p class="release__label">new mixtape</p>
           <h2 class="release__title">VALHALLA</h2>
@@ -283,8 +304,7 @@
           <p class="release__out">out now — stream below</p>
         </section>
 
-        <!-- TRACK LISTING PLAYER -->
-        <div class="audio-player-wrap">
+        <div class="audio-player-wrap" id="playerWrap">
           <div class="demo-dd" id="demoDd">
             <button class="demo-dd__btn" id="demoBtn" type="button" aria-haspopup="listbox" aria-expanded="false">
               <span class="demo-dd__tag" id="demoTag">tracks</span>
@@ -293,9 +313,19 @@
             </button>
             <ul class="demo-dd__menu" id="demoMenu" role="listbox"></ul>
           </div>
-          <audio id="audioPlayer" controls preload="metadata">
-            Your browser does not support the audio element.
-          </audio>
+
+          <div class="controls">
+            <button class="ctl" id="prevBtn" type="button" aria-label="Previous track"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12L18 18V6z"/></svg></button>
+            <button class="ctl ctl--play" id="playBtn" type="button" aria-label="Play">
+              <svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
+            </button>
+            <button class="ctl" id="nextBtn" type="button" aria-label="Next track"><svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
+            <span class="time" id="tCur">0:00</span>
+            <input class="seek" id="seek" type="range" min="0" max="1000" value="0" step="1" aria-label="Seek">
+            <span class="time" id="tDur">0:00</span>
+          </div>
+          <audio id="audioPlayer" preload="metadata"></audio>
         </div>
 
         <nav class="platforms" aria-label="Stream BADFEELSGOOD music">
@@ -317,12 +347,7 @@
               <p class="page-footer-info__title">BADFEELSGOOD</p>
               <p class="page-footer-info__line">dark music from toronto, ontario.</p>
               <p class="page-footer-info__line">VALHALLA mixtape — october 31.</p>
-              <p class="page-footer-info__line">all rights reserved © badfeelsgood 2026.</p>
             </div>
-          </div>
-          <div class="page-footer-social">
-            <a class="social-btn" href="https://x.com/BADFEELSGOOD" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>X / Twitter</a>
-            <a class="social-btn" href="mailto:badfeelsgood416@gmail.com"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Email</a>
           </div>
           <div class="page-footer-section">
             <p class="page-footer-section__title">Music</p>
@@ -334,9 +359,16 @@
               <li class="page-footer-links__item"><a href="https://www.instagram.com/badfeelsgood" target="_blank" rel="noopener noreferrer">Instagram</a></li>
             </ul>
           </div>
+          <div class="page-footer-section">
+            <p class="page-footer-section__title">Contact</p>
+            <div class="page-footer-social">
+              <a class="social-btn" href="https://x.com/BADFEELSGOOD" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>X / Twitter</a>
+              <a class="social-btn" href="mailto:badfeelsgood416@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>Email</a>
+            </div>
+          </div>
         </div>
         <div class="footer-strip">
-          <span>© BADFEELSGOOD 2026 — toronto, ontario</span>
+          <span>© BADFEELSGOOD 2026 — all rights reserved</span>
           <a href="mailto:badfeelsgood416@gmail.com">badfeelsgood416@gmail.com</a>
         </div>
       </div>
@@ -345,11 +377,18 @@
 
 <script>
   const player = document.getElementById('audioPlayer');
+  const playerWrap = document.getElementById('playerWrap');
   const nowPlaying = document.getElementById('nowPlaying');
   const dd = document.getElementById('demoDd');
   const ddBtn = document.getElementById('demoBtn');
   const ddMenu = document.getElementById('demoMenu');
   const ddTag = document.getElementById('demoTag');
+  const playBtn = document.getElementById('playBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const seek = document.getElementById('seek');
+  const tCur = document.getElementById('tCur');
+  const tDur = document.getElementById('tDur');
 
   const CDN = 'https://media.badfeelsgood.xyz/';
 
@@ -359,23 +398,25 @@
     { title: 'Killy - CEO [ft. BADFEELSGOOD]',  file: 'https://media.badfeelsgood.xyz/Killy%20-%20CEO%20%5Bft.%20BADFEELSGOOD%5D.mp3',  group: 'remix' },
     { title: 'Night Lovell - Pawn Shop [ft. BADFEELSGOOD]',  file: 'https://media.badfeelsgood.xyz/Night%20Lovell%20-%20Pawn%20Shop%20%5Bft.%20BADFEELSGOOD%5D.5.mp3',  group: 'remix' },
     { title: 'Bones - BlackLungs&YellowTape [ft. BADFEELSGOOD]',  file: 'https://media.badfeelsgood.xyz/Bones%20-%20BlackLungs%26YellowTape%20%5Bft.%20BADFEELSGOOD%5D.4.mp3', group: 'remix' },
-    
+
     { title: 'BADFEELSGOOD - Spotlight', file: 'https://media.badfeelsgood.xyz/Spotlight_2.5mp3.mp3', group: 'unreleased' },
     { title: 'BADFEELSGOOD - TheRiver', file: 'TheRiver.mp3',      group: 'unreleased' },
-    { title: 'BADFEELSGOOD - ResideLikeRegentPark',  file: 'https://media.badfeelsgood.xyz/ResideLikeRegentPark.2.mp3',                  group: 'unreleased' },    
-    { title: 'BADFEELSGOOD - ReaperFlows',  file: 'https://media.badfeelsgood.xyz/ReaperFlows.mp3',                  group: 'unreleased' },    
-    { title: 'BADFEELSGOOD - ItsGonnaBeALongLife',  file: 'https://media.badfeelsgood.xyz/ItsGonnaBeALongLife.3.mp3',                  group: 'unreleased' },
+    { title: 'BADFEELSGOOD - ResideLikeRegentPark',  file: 'https://media.badfeelsgood.xyz/ResideLikeRegentPark.2.mp3', group: 'unreleased' },
+    { title: 'BADFEELSGOOD - ReaperFlows',  file: 'https://media.badfeelsgood.xyz/ReaperFlows.mp3', group: 'unreleased' },
+    { title: 'BADFEELSGOOD - ItsGonnaBeALongLife',  file: 'https://media.badfeelsgood.xyz/ItsGonnaBeALongLife.3.mp3', group: 'unreleased' },
   ];
 
   const GROUPS = { remix: 'Remixes & Features', unreleased: 'Unreleased Demos' };
   const urlFor = t => /^https?:\/\//i.test(t.file) ? t.file : CDN + t.file.replace(/^\//, '');
   const items = [];
+  let current = -1;
 
   Object.keys(GROUPS).forEach(g => {
     const list = TRACKS.filter(t => t.group === g);
     if (!list.length) return;
     const h = document.createElement('li');
     h.className = 'demo-dd__group';
+    h.setAttribute('role', 'presentation');
     h.textContent = GROUPS[g];
     ddMenu.appendChild(h);
     list.forEach(t => {
@@ -385,33 +426,62 @@
       const name = document.createElement('b');
       name.textContent = t.title;
       const tag = document.createElement('span');
-      tag.textContent = t.file ? 'play' : 'soon';
+      tag.textContent = t.group === 'unreleased' ? 'demo' : 'out';
       li.append(name, tag);
-      li.addEventListener('click', () => { if (t.file) select(t, li, true); });
+      const idx = items.length;
+      li.addEventListener('click', () => select(idx, true));
       ddMenu.appendChild(li);
       items.push({ t, li });
     });
   });
 
-  function select(t, li, autoplay) {
-    items.forEach(i => i.li.classList.remove('active'));
+  function select(idx, autoplay) {
+    const { t, li } = items[idx];
+    current = idx;
+    items.forEach(i => { i.li.classList.remove('active'); i.li.setAttribute('aria-selected', 'false'); });
     li.classList.add('active');
+    li.setAttribute('aria-selected', 'true');
     player.src = urlFor(t);
     ddTag.textContent = t.group === 'unreleased' ? 'demo' : 'out';
     nowPlaying.textContent = t.title;
+    seek.value = 0; paintSeek(); tCur.textContent = '0:00'; tDur.textContent = '0:00';
     closeDd();
     if (autoplay) player.play().catch(() => {});
   }
 
-  player.addEventListener('ended', () => {
-    const playable = items.filter(i => i.t.file);
-    const idx = playable.findIndex(i => i.li.classList.contains('active'));
-    if (idx === -1 || !playable.length) return;
-    const next = playable[(idx + 1) % playable.length];
-    select(next.t, next.li, true);
+  function step(dir) {
+    if (!items.length) return;
+    const n = current === -1 ? 0 : (current + dir + items.length) % items.length;
+    select(n, true);
+  }
+
+  playBtn.addEventListener('click', () => {
+    if (current === -1) { select(0, true); return; }
+    player.paused ? player.play().catch(() => {}) : player.pause();
   });
+  prevBtn.addEventListener('click', () => {
+    if (current !== -1 && player.currentTime > 3) { player.currentTime = 0; return; }
+    step(-1);
+  });
+  nextBtn.addEventListener('click', () => step(1));
+
+  const fmt = s => { if (!isFinite(s)) return '0:00'; s = Math.floor(s); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+  function paintSeek() { seek.style.setProperty('--p', (seek.value / seek.max * 100) + '%'); }
+
+  let scrubbing = false;
+  player.addEventListener('timeupdate', () => {
+    tCur.textContent = fmt(player.currentTime);
+    if (!scrubbing && player.duration) { seek.value = player.currentTime / player.duration * seek.max; paintSeek(); }
+  });
+  player.addEventListener('loadedmetadata', () => { tDur.textContent = fmt(player.duration); });
+  player.addEventListener('play', () => { playerWrap.classList.add('is-playing'); playBtn.setAttribute('aria-label', 'Pause'); });
+  player.addEventListener('pause', () => { playerWrap.classList.remove('is-playing'); playBtn.setAttribute('aria-label', 'Play'); });
+  seek.addEventListener('input', () => { scrubbing = true; paintSeek(); if (player.duration) tCur.textContent = fmt(seek.value / seek.max * player.duration); });
+  seek.addEventListener('change', () => { if (player.duration) player.currentTime = seek.value / seek.max * player.duration; scrubbing = false; });
+
+  player.addEventListener('ended', () => step(1));
   player.addEventListener('error', () => {
-    if (player.getAttribute('src')) nowPlaying.textContent += ' — unavailable';
+    if (player.getAttribute('src') && !nowPlaying.textContent.includes('unavailable')) nowPlaying.textContent += ' — unavailable';
   });
 
   function closeDd() { dd.classList.remove('open'); ddBtn.setAttribute('aria-expanded', 'false'); }
@@ -423,6 +493,7 @@
   document.addEventListener('click', e => { if (!dd.contains(e.target)) closeDd(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDd(); });
 
+  // Countdown — releases at local midnight, Oct 31 2026
   const RELEASE = new Date(2026, 9, 31, 0, 0, 0);
   const pad = n => String(n).padStart(2, '0');
   function tick() {
