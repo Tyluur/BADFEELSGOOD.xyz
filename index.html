@@ -416,6 +416,7 @@
     .valhalla-track:last-child { border-bottom: 0; }
     .valhalla-track:hover { color: var(--white); background: var(--hover-bg); }
     .valhalla-track.active { color: var(--white); background: var(--active-bg); }
+    .valhalla-track.loading .valhalla-track__name { opacity: 0.45; }
     .valhalla-track__num {
       width: 22px;
       font-size: 9px;
@@ -431,12 +432,15 @@
       overflow: hidden;
       text-overflow: ellipsis;
       font-weight: normal;
+      transition: opacity 0.2s ease;
     }
     .valhalla-track__dur {
       font-size: 9px;
       opacity: 0.55;
       flex-shrink: 0;
       font-variant-numeric: tabular-nums;
+      min-width: 28px;
+      text-align: right;
     }
     .valhalla-track.active .valhalla-track__dur { opacity: 0.9; color: var(--accent); }
 
@@ -691,7 +695,7 @@
               <img class="valhalla-cover" id="valhallaCover" src="avatar.png" alt="VALHALLA cover artwork" width="84" height="84">
               <div class="valhalla-info">
                 <p class="valhalla-info__kicker" id="valhallaKicker">track 01</p>
-                <p class="valhalla-info__track" id="valhallaNowPlaying">Valhalla</p>
+                <p class="valhalla-info__track" id="valhallaNowPlaying">Loading…</p>
                 <p class="valhalla-info__artist">BADFEELSGOOD</p>
               </div>
             </div>
@@ -850,7 +854,18 @@
     ddBtn.setAttribute('aria-expanded', 'false');
   }
 
-  /* CUSTOM VALHALLA SOUNDCLOUD DECK (FULLY AUTOMATED FROM SC) */
+  /* ============================================================
+     VALHALLA SOUNDCLOUD DECK
+     Everything (titles, durations, artwork, track count) is read
+     from SoundCloud. No hardcoded track names.
+
+     SoundCloud's widget only returns full metadata for the first
+     few playlist items from getSounds(); the rest arrive as
+     stubs. So we "hydrate" the incomplete ones by silently
+     skipping to each, waiting for real metadata, then returning
+     to track 1. Results are cached in localStorage (12h) so
+     repeat visits render the full list instantly.
+     ============================================================ */
   const valhallaDeck = document.getElementById('valhallaDeck');
   const valhallaCover = document.getElementById('valhallaCover');
   const valhallaKicker = document.getElementById('valhallaKicker');
@@ -862,50 +877,107 @@
   const scSeek = document.getElementById('scSeek');
   const scCur = document.getElementById('scCur');
   const scDur = document.getElementById('scDur');
+  const scIframe = document.getElementById('scWidget');
+
+  const VALHALLA_CACHE_KEY = 'bfg:valhalla:v1';
+  const VALHALLA_CACHE_TTL = 12 * 60 * 60 * 1000;
 
   let scPlayer = null;
-  let scTracks = [];
+  let scTracks = [];            // [{ title, duration, artwork_url, ready }]
   let scCurrentIdx = 0;
   let scDurationMs = 0;
   let scScrubbing = false;
   let scRows = [];
+  let scHydrating = false;
+  let scInitDone = false;
+
+  const placeholderTitle = i => `Track ${i + 1}`;
 
   function paintScSeek() {
     scSeek.style.setProperty('--p', (scSeek.value / scSeek.max * 100) + '%');
   }
 
+  /* ---------- cache ---------- */
+  function loadValhallaCache() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(VALHALLA_CACHE_KEY) || 'null');
+      if (!raw || !Array.isArray(raw.tracks) || !raw.tracks.length) return [];
+      if (Date.now() - raw.t > VALHALLA_CACHE_TTL) return [];
+      return raw.tracks.map((t, i) => ({
+        title: t.title || placeholderTitle(i),
+        duration: t.duration || 0,
+        artwork_url: t.artwork_url || '',
+        ready: !!t.ready
+      }));
+    } catch (e) { return []; }
+  }
+
+  function saveValhallaCache() {
+    try {
+      if (!scTracks.some(t => t.ready)) return;
+      localStorage.setItem(VALHALLA_CACHE_KEY, JSON.stringify({ t: Date.now(), tracks: scTracks }));
+    } catch (e) { /* storage unavailable, ignore */ }
+  }
+
+  /* ---------- track data ---------- */
+  function mergeSound(i, s) {
+    if (!s) return false;
+    const prev = scTracks[i] || { title: placeholderTitle(i), duration: 0, artwork_url: '', ready: false };
+    const next = {
+      title: s.title || prev.title,
+      duration: s.duration || prev.duration,
+      artwork_url: s.artwork_url || prev.artwork_url,
+      ready: !!(s.title && (s.duration || prev.duration)) || prev.ready
+    };
+    const changed = JSON.stringify(prev) !== JSON.stringify(next);
+    scTracks[i] = next;
+    return changed;
+  }
+
+  /* ---------- rendering (updates rows in place, keeps scroll) ---------- */
+  function updateRow(i) {
+    const row = scRows[i];
+    const tr = scTracks[i];
+    if (!row || !tr) return;
+    row.btn.classList.toggle('loading', !tr.ready);
+    row.name.textContent = tr.title;
+    row.dur.textContent = tr.duration ? fmt(tr.duration / 1000) : '';
+  }
+
   function renderValhallaList() {
-    valhallaTrackList.innerHTML = '';
-    scRows = scTracks.map((tr, idx) => {
-      const li = document.createElement('li');
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'valhalla-track' + (idx === scCurrentIdx ? ' active' : '');
+    if (scRows.length !== scTracks.length) {
+      valhallaTrackList.innerHTML = '';
+      scRows = scTracks.map((tr, idx) => {
+        const li = document.createElement('li');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'valhalla-track' + (idx === scCurrentIdx ? ' active' : '');
 
-      const num = document.createElement('span');
-      num.className = 'valhalla-track__num';
-      num.textContent = String(idx + 1).padStart(2, '0');
+        const num = document.createElement('span');
+        num.className = 'valhalla-track__num';
+        num.textContent = String(idx + 1).padStart(2, '0');
 
-      const name = document.createElement('b');
-      name.className = 'valhalla-track__name';
-      name.textContent = tr.title || `Track ${idx + 1}`;
+        const name = document.createElement('b');
+        name.className = 'valhalla-track__name';
 
-      const dur = document.createElement('span');
-      dur.className = 'valhalla-track__dur';
-      dur.textContent = tr.duration ? fmt(tr.duration / 1000) : '';
+        const dur = document.createElement('span');
+        dur.className = 'valhalla-track__dur';
 
-      btn.append(num, name, dur);
-      btn.addEventListener('click', () => {
-        if (!scPlayer) return;
-        setActiveValhallaTrack(idx);
-        scPlayer.skip(idx);
-        scPlayer.play();
+        btn.append(num, name, dur);
+        btn.addEventListener('click', () => {
+          if (!scPlayer) return;
+          scHydrating = false;               // user took over, stop background hydration
+          setActiveValhallaTrack(idx);
+          scPlayer.skip(idx);
+          scPlayer.play();
+        });
+
+        li.appendChild(btn);
+        valhallaTrackList.appendChild(li);
+        return { btn, name, dur };
       });
-
-      li.appendChild(btn);
-      valhallaTrackList.appendChild(li);
-      return btn;
-    });
+    }
+    scTracks.forEach((_, i) => updateRow(i));
   }
 
   function setActiveValhallaTrack(idx) {
@@ -914,7 +986,7 @@
     const tr = scTracks[idx] || scTracks[0];
     valhallaKicker.textContent = `track ${String(idx + 1).padStart(2, '0')}`;
     valhallaNowPlaying.textContent = tr.title;
-    scRows.forEach((btn, i) => btn.classList.toggle('active', i === idx));
+    scRows.forEach((row, i) => row.btn.classList.toggle('active', i === idx));
 
     if (tr.artwork_url) {
       valhallaCover.src = tr.artwork_url.replace('-large', '-t500x500');
@@ -925,36 +997,105 @@
     }
   }
 
-  const scIframe = document.getElementById('scWidget');
+  /* ---------- hydration ---------- */
+  // Resolve with the sound object once the widget is actually on track i with full metadata
+  function waitForSound(i, timeout) {
+    timeout = timeout || 3500;
+    return new Promise(resolve => {
+      const t0 = Date.now();
+      const retry = () => {
+        if (Date.now() - t0 > timeout || !scHydrating) return resolve(null);
+        setTimeout(tick, 150);
+      };
+      const tick = () => {
+        scPlayer.getCurrentSoundIndex(idx => {
+          if (idx !== i) return retry();
+          scPlayer.getCurrentSound(s => {
+            if (s && s.title && s.duration) resolve(s);
+            else retry();
+          });
+        });
+      };
+      tick();
+    });
+  }
+
+  async function hydrateTracks() {
+    if (!scPlayer || scHydrating) return;
+    const missing = [];
+    scTracks.forEach((t, i) => { if (!t.ready) missing.push(i); });
+    if (!missing.length) return;
+
+    scHydrating = true;
+    for (const i of missing) {
+      if (!scHydrating) return;
+      scPlayer.skip(i);
+      const s = await waitForSound(i);
+      if (!scHydrating) return;
+      if (s && mergeSound(i, s)) updateRow(i);
+    }
+    if (!scHydrating) return;
+
+    scHydrating = false;
+    scPlayer.skip(0);
+    setActiveValhallaTrack(0);
+    saveValhallaCache();
+  }
+
+  /* ---------- init ---------- */
+  function fetchSoundsWithRetry(retries) {
+    if (retries === undefined) retries = 8;
+    scPlayer.getSounds(sounds => {
+      if (Array.isArray(sounds) && sounds.length > 0) {
+        // Track count is whatever SoundCloud says it is
+        if (scTracks.length > sounds.length) scTracks.length = sounds.length;
+        while (scTracks.length < sounds.length) {
+          const i = scTracks.length;
+          scTracks.push({ title: placeholderTitle(i), duration: 0, artwork_url: '', ready: false });
+        }
+        sounds.forEach((s, i) => mergeSound(i, s));
+        renderValhallaList();
+        if (!scHydrating) setActiveValhallaTrack(scCurrentIdx);
+        saveValhallaCache();
+        hydrateTracks();
+      } else if (retries > 0) {
+        setTimeout(() => fetchSoundsWithRetry(retries - 1), 400);
+      }
+    });
+  }
+
+  function initValhalla() {
+    if (scInitDone) return;
+    scInitDone = true;
+    fetchSoundsWithRetry();
+  }
+
+  // Instant render from cache (if any) before the widget is even ready
+  scTracks = loadValhallaCache();
+  if (scTracks.length) {
+    renderValhallaList();
+    setActiveValhallaTrack(0);
+  }
+
   if (window.SC && scIframe) {
     scPlayer = window.SC.Widget(scIframe);
 
-    function fetchSoundsWithRetry(retries = 8) {
-      scPlayer.getSounds(sounds => {
-        if (Array.isArray(sounds) && sounds.length > 0) {
-          scTracks = sounds.map((s, i) => ({
-            title: s.title || `Track ${i + 1}`,
-            duration: s.duration || 0,
-            artwork_url: s.artwork_url || ''
-          }));
-          renderValhallaList();
-          setActiveValhallaTrack(0);
-        } else if (retries > 0) {
-          setTimeout(() => fetchSoundsWithRetry(retries - 1), 400);
-        }
-      });
-    }
-
-    scPlayer.bind(window.SC.Widget.Events.READY, () => {
-      fetchSoundsWithRetry();
-    });
+    scPlayer.bind(window.SC.Widget.Events.READY, initValhalla);
+    setTimeout(initValhalla, 4000); // safety net if READY was missed
 
     scPlayer.bind(window.SC.Widget.Events.PLAY, () => {
+      // Any playback during silent hydration is not the user's doing, so stop it
+      if (scHydrating) { scPlayer.pause(); return; }
+
       if (!player.paused) player.pause();
       valhallaDeck.classList.add('is-playing');
       scPlayBtn.setAttribute('aria-label', 'Pause');
       scPlayer.getCurrentSoundIndex(idx => {
-        if (typeof idx === 'number' && scTracks[idx]) setActiveValhallaTrack(idx);
+        if (typeof idx !== 'number') return;
+        scPlayer.getCurrentSound(s => {
+          if (s && mergeSound(idx, s)) { updateRow(idx); saveValhallaCache(); }
+          setActiveValhallaTrack(idx);
+        });
       });
       scPlayer.getDuration(d => {
         if (d) {
@@ -975,6 +1116,7 @@
     });
 
     scPlayer.bind(window.SC.Widget.Events.PLAY_PROGRESS, data => {
+      if (scHydrating) return;
       if (!scScrubbing && data) {
         scCur.textContent = fmt((data.currentPosition || 0) / 1000);
         if (typeof data.relativePosition === 'number' && scSeek.max) {
@@ -987,11 +1129,26 @@
 
   scPlayBtn.addEventListener('click', () => {
     if (!scPlayer) return;
+    if (scHydrating) {
+      // Hydration was mid-skip; stop it and play what the UI is showing
+      scHydrating = false;
+      scPlayer.skip(scCurrentIdx);
+      scPlayer.play();
+      return;
+    }
     scPlayer.toggle();
   });
 
   scPrevBtn.addEventListener('click', () => {
     if (!scPlayer || !scTracks.length) return;
+    if (scHydrating) {
+      scHydrating = false;
+      const prev = (scCurrentIdx - 1 + scTracks.length) % scTracks.length;
+      setActiveValhallaTrack(prev);
+      scPlayer.skip(prev);
+      scPlayer.play();
+      return;
+    }
     scPlayer.getPosition(pos => {
       if (pos > 3000) {
         scPlayer.seekTo(0);
@@ -1006,6 +1163,7 @@
 
   scNextBtn.addEventListener('click', () => {
     if (!scPlayer || !scTracks.length) return;
+    scHydrating = false;
     const next = (scCurrentIdx + 1) % scTracks.length;
     setActiveValhallaTrack(next);
     scPlayer.skip(next);
@@ -1013,6 +1171,7 @@
   });
 
   scSeek.addEventListener('input', () => {
+    if (scHydrating) return;
     scScrubbing = true;
     paintScSeek();
     if (scDurationMs) {
@@ -1021,7 +1180,7 @@
   });
 
   scSeek.addEventListener('change', () => {
-    if (scPlayer && scDurationMs) {
+    if (scPlayer && scDurationMs && !scHydrating) {
       scPlayer.seekTo((scSeek.value / scSeek.max) * scDurationMs);
     }
     scScrubbing = false;
@@ -1144,6 +1303,7 @@
   });
   player.addEventListener('loadedmetadata', () => { tDur.textContent = fmt(player.duration); });
   player.addEventListener('play', () => {
+    scHydrating = false;
     if (scPlayer) scPlayer.pause();
     playerWrap.classList.add('is-playing');
     playBtn.setAttribute('aria-label', 'Pause');
