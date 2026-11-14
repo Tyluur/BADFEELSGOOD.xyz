@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
 
   <title>BADFEELSGOOD — VALHALLA Mixtape Out Now</title>
-  <meta name="description" content="VALHALLA, the new mixtape from BADFEELSGOOD, is out now (released November 13, 2026). Dark music from Toronto, Ontario. Stream on SoundCloud, Spotify, and Apple Music.">
+  <meta name="description" content="VALHALLA, the new mixtape from BADFEELSGOOD, is out now (released November 13, 2026). Dark music from Toronto, Ontario. Stream exclusively on SoundCloud.">
   <meta name="author" content="BADFEELSGOOD">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="theme-color" content="#000000">
@@ -71,9 +71,9 @@
           "https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog",
           "https://music.apple.com/ca/artist/badfeelsgood/1556789790",
           "https://soundcloud.com/BADFEELSGOOD",
-          "https://www.instagram.com/bXdfeelsgood",
+          "https://www.instagram.com/bxdfeelsgood",
           "https://www.tiktok.com/@_badfeelsgood",
-          "https://x.com/BXDFEELSGOOD"
+          "https://x.com/BADFEELSGOOD"
         ],
         "contactPoint": { "@type": "ContactPoint", "email": "badfeelsgood416@gmail.com", "contactType": "General Inquiries" }
       },
@@ -84,19 +84,20 @@
         "url": "https://badfeelsgood.xyz/#valhalla",
         "byArtist": { "@id": "https://badfeelsgood.xyz/#artist" },
         "datePublished": "2026-11-13T12:00:00-05:00",
-        "numTracks": 9,
+        "numTracks": 10,
         "albumProductionType": "https://schema.org/MixtapeAlbum",
         "albumReleaseType": "https://schema.org/AlbumRelease",
         "track": [
           { "@type": "MusicRecording", "position": 1, "name": "Valhalla" },
           { "@type": "MusicRecording", "position": 2, "name": "HeavyBallista" },
           { "@type": "MusicRecording", "position": 3, "name": "RaindropsFallingOnMyMattePatek" },
-          { "@type": "MusicRecording", "position": 4, "name": "NumbByDefault" },
-          { "@type": "MusicRecording", "position": 5, "name": "TheLightAtTheEnd" },
-          { "@type": "MusicRecording", "position": 6, "name": "KnowTheyChangeThatSubject" },
-          { "@type": "MusicRecording", "position": 7, "name": "DontYouKnowItMadeMeCrooked" },
-          { "@type": "MusicRecording", "position": 8, "name": "ForTheCrushedDownBezels" },
-          { "@type": "MusicRecording", "position": 9, "name": "AtLeastI'mFaded" }
+          { "@type": "MusicRecording", "position": 4, "name": "NothingToBelieveIn" },
+          { "@type": "MusicRecording", "position": 5, "name": "NumbByDefault" },
+          { "@type": "MusicRecording", "position": 6, "name": "TheLightAtTheEnd" },
+          { "@type": "MusicRecording", "position": 7, "name": "KnowTheyChangeThatSubject" },
+          { "@type": "MusicRecording", "position": 8, "name": "DontYouKnowItMadeMeCrooked" },
+          { "@type": "MusicRecording", "position": 9, "name": "ForTheCrushedDownBezels" },
+          { "@type": "MusicRecording", "position": 10, "name": "AtLeastI'mFaded" }
         ]
       }
     ]
@@ -593,8 +594,6 @@
 
         <nav class="platforms platforms--wide" aria-label="Stream VALHALLA">
           <a class="platform-link wide" href="https://soundcloud.com/badfeelsgood/sets/valhalla" target="_blank" rel="noopener noreferrer">Stream on SoundCloud <span class="arrow" aria-hidden="true">↗</span></a>
-          <a class="platform-link" href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog" target="_blank" rel="noopener noreferrer">Spotify <span class="arrow" aria-hidden="true">↗</span></a>
-          <a class="platform-link" href="https://music.apple.com/ca/artist/badfeelsgood/1556789790" target="_blank" rel="noopener noreferrer">Apple Music <span class="arrow" aria-hidden="true">↗</span></a>
         </nav>
       </section>
 
@@ -702,6 +701,11 @@
   const items = [];
   let current = -1;
 
+  function closeDd() {
+    dd.classList.remove('open');
+    ddBtn.setAttribute('aria-expanded', 'false');
+  }
+
   // SoundCloud Widget reference for cross-player pause control
   let scPlayer = null;
   const scIframe = document.getElementById('scWidget');
@@ -733,7 +737,7 @@
 
     document.title = VIEWS[key].title;
     closeDd();
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: 'auto' });
   }
 
   window.addEventListener('hashchange', navigate);
@@ -843,7 +847,6 @@
     if (player.getAttribute('src') && !nowPlaying.textContent.includes('unavailable')) nowPlaying.textContent += ' — unavailable';
   });
 
-  function closeDd() { dd.classList.remove('open'); ddBtn.setAttribute('aria-expanded', 'false'); }
   ddBtn.addEventListener('click', e => {
     e.stopPropagation();
     const open = dd.classList.toggle('open');
