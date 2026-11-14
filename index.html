@@ -325,19 +325,21 @@
       border: 1px solid var(--border);
       border-radius: 2px;
       overflow: hidden;
-      background: #0a0a0a;
+      background: #121212;
       transition: border-color 0.2s ease;
     }
     .sc-frame-wrap:hover { border-color: var(--border-hover); }
     .sc-frame-wrap iframe {
       display: block;
       width: 100%;
-      height: 590px;
+      height: 530px;
       border: 0;
-      filter: contrast(1.06) brightness(0.92) saturate(0.65);
+      filter: invert(0.925) hue-rotate(180deg) contrast(1.08) brightness(0.95) saturate(0.85);
       transition: filter 0.25s ease;
     }
-    .sc-frame-wrap:hover iframe { filter: contrast(1.04) brightness(0.96) saturate(0.75); }
+    .sc-frame-wrap:hover iframe {
+      filter: invert(0.925) hue-rotate(180deg) contrast(1.06) brightness(1) saturate(0.95);
+    }
     .sc-meta {
       display: flex;
       align-items: center;
@@ -587,7 +589,7 @@
               id="scWidget"
               title="BADFEELSGOOD — VALHALLA Mixtape on SoundCloud"
               width="100%"
-              height="590"
+              height="530"
               scrolling="no"
               frameborder="no"
               allow="autoplay; encrypted-media"
