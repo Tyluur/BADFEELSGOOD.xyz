@@ -389,6 +389,10 @@
     }
     .valhalla-tracks {
       list-style: none;
+      max-height: 280px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #333 transparent;
     }
     .valhalla-track {
       width: 100%;
@@ -830,19 +834,6 @@
     { title: 'BADFEELSGOOD - ItsGonnaBeALongLife', file: 'https://media.badfeelsgood.xyz/ItsGonnaBeALongLife.3.mp3', group: 'unreleased' },
   ];
 
-  const VALHALLA_FALLBACK = [
-    'Valhalla',
-    'HeavyBallista',
-    'RaindropsFallingOnMyMattePatek',
-    'NothingToBelieveIn',
-    'NumbByDefault',
-    'TheLightAtTheEnd',
-    'KnowTheyChangeThatSubject',
-    'DontYouKnowItMadeMeCrooked',
-    'ForTheCrushedDownBezels',
-    "AtLeastI'mFaded"
-  ];
-
   const GROUPS = { remix: 'Remixes & Features', unreleased: 'Unreleased Demos' };
   const urlFor = t => /^https?:\/\//i.test(t.file) ? t.file : CDN + t.file.replace(/^\//, '');
   const items = [];
@@ -859,7 +850,7 @@
     ddBtn.setAttribute('aria-expanded', 'false');
   }
 
-  /* CUSTOM VALHALLA SOUNDCLOUD DECK */
+  /* CUSTOM VALHALLA SOUNDCLOUD DECK (FULLY AUTOMATED FROM SC) */
   const valhallaDeck = document.getElementById('valhallaDeck');
   const valhallaCover = document.getElementById('valhallaCover');
   const valhallaKicker = document.getElementById('valhallaKicker');
@@ -873,7 +864,7 @@
   const scDur = document.getElementById('scDur');
 
   let scPlayer = null;
-  let scTracks = VALHALLA_FALLBACK.map(title => ({ title, duration: 0, artwork_url: '' }));
+  let scTracks = [];
   let scCurrentIdx = 0;
   let scDurationMs = 0;
   let scScrubbing = false;
@@ -897,7 +888,7 @@
 
       const name = document.createElement('b');
       name.className = 'valhalla-track__name';
-      name.textContent = tr.title || VALHALLA_FALLBACK[idx] || `Track ${idx + 1}`;
+      name.textContent = tr.title || `Track ${idx + 1}`;
 
       const dur = document.createElement('span');
       dur.className = 'valhalla-track__dur';
@@ -918,8 +909,9 @@
   }
 
   function setActiveValhallaTrack(idx) {
+    if (!scTracks.length) return;
     scCurrentIdx = idx;
-    const tr = scTracks[idx] || { title: VALHALLA_FALLBACK[idx] || `Track ${idx + 1}`, duration: 0 };
+    const tr = scTracks[idx] || scTracks[0];
     valhallaKicker.textContent = `track ${String(idx + 1).padStart(2, '0')}`;
     valhallaNowPlaying.textContent = tr.title;
     scRows.forEach((btn, i) => btn.classList.toggle('active', i === idx));
@@ -933,24 +925,28 @@
     }
   }
 
-  renderValhallaList();
-
   const scIframe = document.getElementById('scWidget');
   if (window.SC && scIframe) {
     scPlayer = window.SC.Widget(scIframe);
 
-    scPlayer.bind(window.SC.Widget.Events.READY, () => {
+    function fetchSoundsWithRetry(retries = 8) {
       scPlayer.getSounds(sounds => {
-        if (Array.isArray(sounds) && sounds.length) {
+        if (Array.isArray(sounds) && sounds.length > 0) {
           scTracks = sounds.map((s, i) => ({
-            title: s.title || VALHALLA_FALLBACK[i] || `Track ${i + 1}`,
+            title: s.title || `Track ${i + 1}`,
             duration: s.duration || 0,
             artwork_url: s.artwork_url || ''
           }));
           renderValhallaList();
           setActiveValhallaTrack(0);
+        } else if (retries > 0) {
+          setTimeout(() => fetchSoundsWithRetry(retries - 1), 400);
         }
       });
+    }
+
+    scPlayer.bind(window.SC.Widget.Events.READY, () => {
+      fetchSoundsWithRetry();
     });
 
     scPlayer.bind(window.SC.Widget.Events.PLAY, () => {
@@ -958,7 +954,7 @@
       valhallaDeck.classList.add('is-playing');
       scPlayBtn.setAttribute('aria-label', 'Pause');
       scPlayer.getCurrentSoundIndex(idx => {
-        if (typeof idx === 'number') setActiveValhallaTrack(idx);
+        if (typeof idx === 'number' && scTracks[idx]) setActiveValhallaTrack(idx);
       });
       scPlayer.getDuration(d => {
         if (d) {
@@ -981,7 +977,7 @@
     scPlayer.bind(window.SC.Widget.Events.PLAY_PROGRESS, data => {
       if (!scScrubbing && data) {
         scCur.textContent = fmt((data.currentPosition || 0) / 1000);
-        if (typeof data.relativePosition === 'number') {
+        if (typeof data.relativePosition === 'number' && scSeek.max) {
           scSeek.value = Math.round(data.relativePosition * scSeek.max);
           paintScSeek();
         }
@@ -995,7 +991,7 @@
   });
 
   scPrevBtn.addEventListener('click', () => {
-    if (!scPlayer) return;
+    if (!scPlayer || !scTracks.length) return;
     scPlayer.getPosition(pos => {
       if (pos > 3000) {
         scPlayer.seekTo(0);
@@ -1009,7 +1005,7 @@
   });
 
   scNextBtn.addEventListener('click', () => {
-    if (!scPlayer) return;
+    if (!scPlayer || !scTracks.length) return;
     const next = (scCurrentIdx + 1) % scTracks.length;
     setActiveValhallaTrack(next);
     scPlayer.skip(next);
