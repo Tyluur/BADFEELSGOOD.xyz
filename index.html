@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes"/>
 
   <title>BADFEELSGOOD — VALHALLA Mixtape Out Now</title>
-  <meta name="description" content="VALHALLA, the new mixtape from BADFEELSGOOD, is out now (released November 13, 2026). Dark music from Toronto, Ontario. Stream exclusively on SoundCloud.">
+  <meta name="description" content="VALHALLA, the new mixtape from BADFEELSGOOD, is out now (released November 13, 2026). Dark music from Toronto, Ontario. Stream now on Spotify, Apple Music, and SoundCloud.">
   <meta name="author" content="BADFEELSGOOD">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
   <meta name="theme-color" content="#000000">
@@ -729,6 +729,8 @@
         </div>
 
         <nav class="platforms platforms--wide" aria-label="Stream VALHALLA">
+          <a class="platform-link" href="https://open.spotify.com/artist/4yJJcKI6XrepAaC0Q7fDog" target="_blank" rel="noopener noreferrer">Spotify <span class="arrow" aria-hidden="true">↗</span></a>
+          <a class="platform-link" href="https://music.apple.com/ca/artist/badfeelsgood/1556789790" target="_blank" rel="noopener noreferrer">Apple Music <span class="arrow" aria-hidden="true">↗</span></a>
           <a class="platform-link wide" href="https://soundcloud.com/badfeelsgood/sets/valhalla" target="_blank" rel="noopener noreferrer">Stream on SoundCloud <span class="arrow" aria-hidden="true">↗</span></a>
         </nav>
       </section>
@@ -852,15 +854,6 @@
 
   /* ============================================================
      VALHALLA SOUNDCLOUD DECK
-     Everything (titles, durations, artwork, track count) is read
-     from SoundCloud. No hardcoded track names.
-
-     SoundCloud's widget only returns full metadata for the first
-     few playlist items from getSounds(); the rest arrive as
-     stubs. So we "hydrate" the incomplete ones by silently
-     skipping to each, waiting for real metadata, then returning
-     to track 1. Results are cached in localStorage (12h) so
-     repeat visits render the full list instantly.
      ============================================================ */
   const valhallaDeck = document.getElementById('valhallaDeck');
   const valhallaCover = document.getElementById('valhallaCover');
@@ -879,7 +872,7 @@
   const VALHALLA_CACHE_TTL = 12 * 60 * 60 * 1000;
 
   let scPlayer = null;
-  let scTracks = [];            // [{ title, duration, artwork_url, ready }]
+  let scTracks = [];
   let scCurrentIdx = 0;
   let scDurationMs = 0;
   let scScrubbing = false;
@@ -893,7 +886,6 @@
     scSeek.style.setProperty('--p', (scSeek.value / scSeek.max * 100) + '%');
   }
 
-  /* ---------- cache ---------- */
   function loadValhallaCache() {
     try {
       const raw = JSON.parse(localStorage.getItem(VALHALLA_CACHE_KEY) || 'null');
@@ -912,10 +904,9 @@
     try {
       if (!scTracks.some(t => t.ready)) return;
       localStorage.setItem(VALHALLA_CACHE_KEY, JSON.stringify({ t: Date.now(), tracks: scTracks }));
-    } catch (e) { /* storage unavailable, ignore */ }
+    } catch (e) {}
   }
 
-  /* ---------- track data ---------- */
   function mergeSound(i, s) {
     if (!s) return false;
     const prev = scTracks[i] || { title: placeholderTitle(i), duration: 0, artwork_url: '', ready: false };
@@ -930,7 +921,6 @@
     return changed;
   }
 
-  /* ---------- rendering (updates rows in place, keeps scroll) ---------- */
   function updateRow(i) {
     const row = scRows[i];
     const tr = scTracks[i];
@@ -962,7 +952,7 @@
         btn.append(num, name, dur);
         btn.addEventListener('click', () => {
           if (!scPlayer) return;
-          scHydrating = false;               // user took over, stop background hydration
+          scHydrating = false;
           setActiveValhallaTrack(idx);
           scPlayer.skip(idx);
           scPlayer.play();
@@ -993,8 +983,6 @@
     }
   }
 
-  /* ---------- hydration ---------- */
-  // Resolve with the sound object once the widget is actually on track i with full metadata
   function waitForSound(i, timeout) {
     timeout = timeout || 3500;
     return new Promise(resolve => {
@@ -1038,12 +1026,10 @@
     saveValhallaCache();
   }
 
-  /* ---------- init ---------- */
   function fetchSoundsWithRetry(retries) {
     if (retries === undefined) retries = 8;
     scPlayer.getSounds(sounds => {
       if (Array.isArray(sounds) && sounds.length > 0) {
-        // Track count is whatever SoundCloud says it is
         if (scTracks.length > sounds.length) scTracks.length = sounds.length;
         while (scTracks.length < sounds.length) {
           const i = scTracks.length;
@@ -1066,7 +1052,6 @@
     fetchSoundsWithRetry();
   }
 
-  // Instant render from cache (if any) before the widget is even ready
   scTracks = loadValhallaCache();
   if (scTracks.length) {
     renderValhallaList();
@@ -1077,10 +1062,9 @@
     scPlayer = window.SC.Widget(scIframe);
 
     scPlayer.bind(window.SC.Widget.Events.READY, initValhalla);
-    setTimeout(initValhalla, 4000); // safety net if READY was missed
+    setTimeout(initValhalla, 4000);
 
     scPlayer.bind(window.SC.Widget.Events.PLAY, () => {
-      // Any playback during silent hydration is not the user's doing, so stop it
       if (scHydrating) { scPlayer.pause(); return; }
 
       if (!player.paused) player.pause();
@@ -1126,7 +1110,6 @@
   scPlayBtn.addEventListener('click', () => {
     if (!scPlayer) return;
     if (scHydrating) {
-      // Hydration was mid-skip; stop it and play what the UI is showing
       scHydrating = false;
       scPlayer.skip(scCurrentIdx);
       scPlayer.play();
@@ -1322,6 +1305,6 @@
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDd(); });
 </script>
 
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "f886fe0306e942f4b73a0df8e13a1eac"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
-
