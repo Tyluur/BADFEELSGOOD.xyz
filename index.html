@@ -718,7 +718,6 @@
             height="1"
             scrolling="no"
             frameborder="no"
-            allow="autoplay"
             src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/soundcloud%253Aplaylists%253A2328632355&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&show_teaser=false">
           </iframe>
 
@@ -879,6 +878,7 @@
   let scRows = [];
   let scHydrating = false;
   let scInitDone = false;
+  let scUserInitiated = false;
 
   const placeholderTitle = i => `Track ${i + 1}`;
 
@@ -953,6 +953,8 @@
         btn.addEventListener('click', () => {
           if (!scPlayer) return;
           scHydrating = false;
+          scUserInitiated = true;
+          scPlayer.setVolume(100);
           setActiveValhallaTrack(idx);
           scPlayer.skip(idx);
           scPlayer.play();
@@ -1005,25 +1007,31 @@
   }
 
   async function hydrateTracks() {
-    if (!scPlayer || scHydrating) return;
+    if (!scPlayer || scHydrating || scUserInitiated) return;
     const missing = [];
     scTracks.forEach((t, i) => { if (!t.ready) missing.push(i); });
     if (!missing.length) return;
 
     scHydrating = true;
+    scPlayer.setVolume(0);
+
     for (const i of missing) {
-      if (!scHydrating) return;
+      if (!scHydrating || scUserInitiated) break;
       scPlayer.skip(i);
+      scPlayer.pause();
       const s = await waitForSound(i);
-      if (!scHydrating) return;
+      if (!scHydrating || scUserInitiated) break;
       if (s && mergeSound(i, s)) updateRow(i);
     }
-    if (!scHydrating) return;
 
-    scHydrating = false;
-    scPlayer.skip(0);
-    setActiveValhallaTrack(0);
-    saveValhallaCache();
+    if (!scUserInitiated) {
+      scHydrating = false;
+      scPlayer.skip(0);
+      scPlayer.pause();
+      setActiveValhallaTrack(0);
+      saveValhallaCache();
+    }
+    scPlayer.setVolume(100);
   }
 
   function fetchSoundsWithRetry(retries) {
@@ -1065,7 +1073,10 @@
     setTimeout(initValhalla, 4000);
 
     scPlayer.bind(window.SC.Widget.Events.PLAY, () => {
-      if (scHydrating) { scPlayer.pause(); return; }
+      if (scHydrating || !scUserInitiated) {
+        scPlayer.pause();
+        return;
+      }
 
       if (!player.paused) player.pause();
       valhallaDeck.classList.add('is-playing');
@@ -1096,7 +1107,7 @@
     });
 
     scPlayer.bind(window.SC.Widget.Events.PLAY_PROGRESS, data => {
-      if (scHydrating) return;
+      if (scHydrating || !scUserInitiated) return;
       if (!scScrubbing && data) {
         scCur.textContent = fmt((data.currentPosition || 0) / 1000);
         if (typeof data.relativePosition === 'number' && scSeek.max) {
@@ -1109,6 +1120,8 @@
 
   scPlayBtn.addEventListener('click', () => {
     if (!scPlayer) return;
+    scUserInitiated = true;
+    scPlayer.setVolume(100);
     if (scHydrating) {
       scHydrating = false;
       scPlayer.skip(scCurrentIdx);
@@ -1120,6 +1133,8 @@
 
   scPrevBtn.addEventListener('click', () => {
     if (!scPlayer || !scTracks.length) return;
+    scUserInitiated = true;
+    scPlayer.setVolume(100);
     if (scHydrating) {
       scHydrating = false;
       const prev = (scCurrentIdx - 1 + scTracks.length) % scTracks.length;
@@ -1142,6 +1157,8 @@
 
   scNextBtn.addEventListener('click', () => {
     if (!scPlayer || !scTracks.length) return;
+    scUserInitiated = true;
+    scPlayer.setVolume(100);
     scHydrating = false;
     const next = (scCurrentIdx + 1) % scTracks.length;
     setActiveValhallaTrack(next);
